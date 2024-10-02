@@ -1,41 +1,22 @@
-# app/app.py
-
-from flask import Flask, render_template, send_from_directory, make_response # type: ignore
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    response = make_response(render_template('index.html'))
-    # Set security headers
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
 
-#login page
+# url: http[80]/http[443]://www.something.com:443/path
+# Need more adjustments. 
+@app.route('/') #root route
+def home():
+    return render_template("index.html")
+
 @app.route('/login')
 def login():
-    return "modify your page here"
+    return "Modify your login page here"
 
-# Serve CSS
-@app.route('/css/<path:filename>')
-def serve_css(filename):
-    response = send_from_directory('static/css', filename)
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
-
-# Serve JavaScript
-@app.route('/js/<path:filename>')
-def serve_js(filename):
-    response = send_from_directory('static/js', filename)
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
-
-# Serve Images
-@app.route('/images/<path:filename>')
-def serve_images(filename):
-    response = send_from_directory('static/images', filename)
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
+@app.route('/test') # for test purpose only, Modify this if you have any to try out
+def hello_world():
+    return '<h1>Hello!</h1>'
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=5000)
+    # debug=True allow you to see modification immediately
