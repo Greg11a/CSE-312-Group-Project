@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory, make_response
 
 app = Flask(__name__)
 
@@ -7,11 +7,19 @@ app = Flask(__name__)
 # Need more adjustments. 
 @app.route('/') #root route
 def home():
-    return render_template("index.html")
+    response = make_response(render_template('index.html'))
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
 
 @app.route('/login')
 def login():
     return "Modify your login page here"
+
+@app.route('/images/<path:filename>')
+def serve_images(filename):
+    response = send_from_directory('static/images', filename)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
 
 @app.route('/test') # for test purpose only, Modify this if you have any to try out
 def hello_world():
