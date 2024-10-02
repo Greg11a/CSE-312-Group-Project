@@ -15,6 +15,10 @@ def home():
 def login():
     return "Modify your login page here"
 
+@app.route('/chat')
+def chat():
+    return "Chat Page"
+
 @app.route('/images/<path:filename>')
 def serve_images(filename):
     response = send_from_directory('static/images', filename)
@@ -26,5 +30,5 @@ def hello_world():
     return '<h1>Hello!</h1>'
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8080)
     # debug=True allow you to see modification immediately
