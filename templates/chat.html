@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="styles" href="/static/chat.css">
+        <title> Chat and Post</title>
+    </head>
+<body>
+    <div id="container">
+        <h1>Post what you like</h1>
+        <div id="post-form">
+            <textarea id="post-text" placeholder="What do you want to share today?"></textarea>
+            <input type="file" id="post-image" accept="image/*">
+            <button onclick="submitPost()">Post</button>
+        </div>
+        <div id="posts-container"></div>
+    </div>
+    <script src="/static/chat.js"></script>
+</body>
+</html>

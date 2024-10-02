@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Home Page</title>
+    <link href="/static/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="#">Home</a></h1>
+        <nav>
+            <ul>
+                <li><a href="#">Chat</a></li>
+                <li><a href="#" id="login-icon">
+                        <span class="material-icons" alt="Login">account_circle</span>
+                    </a></li>
+                    <script src="/static/index.js"></script>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <main class="main-content">
+            <div class="post-input">
+                <textarea placeholder="What is happening?!" rows="3"></textarea>
+                <button>Post</button>
+            </div>
+            <div class="post-feed">
+                <div class="post">
+                    <div class="post-header">
+                        <h3>Jesse Hartloff</h3>
+                        <span>@jessehartloff · 1d</span>
+                    </div>
+                    <p>This is a sample post.</p>
+                </div>
+                <div class="post">
+                    <div class="post-header">
+                        <h3>Paul Dickson</h3>
+                        <span>@pauldickson · 2d</span>
+                    </div>
+                    <p>This is another sample post.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
