@@ -18,7 +18,9 @@ def secure_header(response):
 
 @app.route('/login')
 def login():
-    return "Modify your login page here"
+    response = make_response(render_template('login.html'))
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
 
 @app.errorhandler(404)
 def page_not_found(e):
