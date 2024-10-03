@@ -20,11 +20,12 @@ def secure_header(response):
 def login():
     return "Modify your login page here"
 
-@app.route('/chat')
-def chat():
-    return "Chat Page"
+@app.errorhandler(404)
+def page_not_found(e):
+    response = make_response(render_template('404.html'), 404)
+    return response
 
-@app.route('/images/<path:filename>')
+@app.route('/static/images/<path:filename>')
 def serve_images(filename):
     response = send_from_directory('static/images', filename)
     response.headers['X-Content-Type-Options'] = 'nosniff'

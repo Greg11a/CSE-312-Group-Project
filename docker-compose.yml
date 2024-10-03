@@ -6,7 +6,7 @@ services:
     ports:
       - '8080:8080'
     environment:
-      WAIT_HOST: mongo:27000 #might need adjustment
+      WAIT_HOST: mongo:27017 #might need adjustment
   mongo:
     image: mongo:latest
     restart: always

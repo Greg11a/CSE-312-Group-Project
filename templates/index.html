@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         #scrollableDiv {
-            height: 150px;
+            height: auto;
+            max-height: 510px;
             overflow-y: scroll;
             padding: 10px;
         }
@@ -22,7 +23,6 @@
         <nav>
             <ul>
                 <li><a href="#" id="chat-icon">Chat</a></li>
-                <script src="/static/index.js"></script>
                 <li><a href="#" id="login-icon">
                         <span class="material-icons" alt="Login">account_circle</span>
                     </a></li>
@@ -51,7 +51,18 @@
                     </div>
                     <p>This is another sample post.</p>
                 </div>
+                <div class="post">
+                    <div class="post-header">
+                        <h3>Zijun Wei</h3>
+                        <span>@zijunwei · 4d</span>
+                    </div>
+                    <p>This is a sample post of Image.</p>
+                    <!-- Place Holder for Sample Image -->
+                    <img src="/static/images/flower.jpg" alt="Sample Image" />
+                </div>
             </div>
+
+
         </main>
     </div>
 </body>
