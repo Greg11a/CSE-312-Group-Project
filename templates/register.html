@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
-    <title>Login Page</title>
+    <title>Register Page</title>
     <link href="/static/css/styles.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
     <header>
-        <h1><a href="#">Login</a></h1>
+        <h1><a href="#">Register</a></h1>
         <nav>
             <ul>
                 <li><a href="#" id="chat-icon">Chat</a></li>
@@ -24,10 +24,11 @@
     </header>
 
     <a href="/" class="arrow">&#x2190; Home</a>
+    <a href="/login" class="arrow">&#x2190; Login</a>
 
     <div class="login-container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
+        <h2>Register</h2>
+        <form action="/register" method="post">
             <div class="input-container">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="111" required>
@@ -40,11 +41,14 @@
                 <!-- Place Holder for Sample data storing -->
                 <!--  eg: <input type="text" id="password" name="abc" required> -->
             </div>
-            <button type="submit" class="login-button">Login</button>
+            <div class="input-container">
+                <label for="password">Re-enter password</label>
+                <input type="text" id="password" name="abc" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="password" name="abc" required> -->
+            </div>
+            <button type="submit" class="login-button">Register</button>
         </form>
-        <p class="register-link">Don't have an account?
-            <a href="/register" class="arrow-To-Right">Register here &#x2192;</a>
-        </p>
     </div>
 </body>
 

@@ -129,7 +129,6 @@ header nav ul li a .material-icons {
 
 .arrow {
     padding-top: 100px;
-    display: block;
     color: rgba(240, 184, 29, 0.969);
     font-size: 18px;
     margin-left: 20px; 
@@ -179,4 +178,13 @@ header nav ul li a .material-icons {
     border-radius: 5px; 
     cursor: pointer;
     margin-top: 30px; 
+}
+
+.register-link {
+    color: rgba(240, 184, 29, 0.969);
+    padding: 10px; 
+}
+
+.arrow-To-Right {
+    color:  rgb(29, 155, 240);
 }
