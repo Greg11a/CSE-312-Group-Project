@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login Page</title>
+    <link href="/static/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="#">Login</a></h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="chat-icon">Chat</a></li>
+                <li><a href="/login" id="login-icon">
+                    <span class="material-icons" alt="Login">account_circle</span>
+                </a></li>
+                    <script src="/static/index.js"></script>
+            </ul>
+        </nav>
+    </header>
+
+    <a href="/" class="arrow">&#x2190; Home</a>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <div class="input-container">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="111" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="username" name="111" required> -->
+            </div>
+            <div class="input-container">
+                <label for="password">Password</label>
+                <input type="text" id="password" name="abc" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="password" name="abc" required> -->
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>
