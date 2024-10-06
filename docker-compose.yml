@@ -3,6 +3,8 @@ services:
     build: .
     ports:
       - '8080:8080'
+    volumes:
+      - .:/root
     environment:
       WAIT_HOST: mongo:27017
   mongo:
@@ -17,6 +19,7 @@ services:
 
 networks:
   app-network:
+
 
 volumes:
   mongo-data:
