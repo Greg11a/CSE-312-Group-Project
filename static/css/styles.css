@@ -59,6 +59,11 @@ header nav ul li a .material-icons {
     font-size: 36px;
 }
 
+.center {
+    display: flex;
+    justify-content: center;
+}
+
 .container {
     display: grid;
     gap: 20px;
@@ -129,6 +134,11 @@ header nav ul li a .material-icons {
 .post p {
     font-size: 16px;
     color: #14171a;
+}
+
+.post img {
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 .like-button {
