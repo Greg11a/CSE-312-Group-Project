@@ -14,3 +14,9 @@ services:
       - app-network
     volumes:
       - mongo-data:/data/db
+
+networks:
+  app-network:
+
+volumes:
+  mongo-data:
