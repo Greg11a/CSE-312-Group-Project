@@ -131,6 +131,20 @@ header nav ul li a .material-icons {
     color: #14171a;
 }
 
+.like-button {
+    background-color: transparent;
+    color: var(--button-color);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    margin-top: 10px;
+}
+
+.like-button:hover {
+    color: rgb(0, 123, 255);
+    transform: scale(1.1);
+}
+
 .arrow {
     padding-top: 100px;
     color: rgba(240, 184, 29, 0.969);
