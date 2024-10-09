@@ -1,55 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Register Page</title>
-    <link href="/static/css/styles.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+{% block title %}Register{% endblock %}
 
-<body>
-    <header>
-        <h1><a href="#">Register</a></h1>
-        <nav>
-            <ul>
-                <li><a href="#" id="chat-icon">Chat</a></li>
-                <li><a href="#" id="login-icon">
-                    <span class="material-icons" alt="Login">account_circle</span>
-                </a></li>
-                    <script  src="/static/js/index.js"></script>
-            </ul>
-        </nav>
-    </header>
-
-    <a href="/" class="arrow">&#x2190; Home</a>
-    <a href="/login" class="arrow">&#x2190; Login</a>
-
-    <div class="login-container">
-        <h2>Register</h2>
-        <form action="/register" method="post">
-            <div class="input-container">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="111" required>
-                <!-- Place Holder for Sample data storing -->
-                <!--  eg: <input type="text" id="username" name="111" required> -->
-            </div>
-            <div class="input-container">
-                <label for="password">Password</label>
-                <input type="text" id="password" name="abc" required>
-                <!-- Place Holder for Sample data storing -->
-                <!--  eg: <input type="text" id="password" name="abc" required> -->
-            </div>
-            <div class="input-container">
-                <label for="password">Re-enter password</label>
-                <input type="text" id="password" name="abc" required>
-                <!-- Place Holder for Sample data storing -->
-                <!--  eg: <input type="text" id="password" name="abc" required> -->
-            </div>
-            <button type="submit" class="login-button">Register</button>
-        </form>
-    </div>
-</body>
-
-</html>
+{% block content %}
+<a href="/login" class="arrow">&#x2190; Login</a>
+<div class="login-container">
+    <h2>Register</h2>
+    <form action="/register" method="post">
+        <div class="input-container">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="111" required>
+            <!-- Place Holder for Sample data storing -->
+            <!--  eg: <input type="text" id="username" name="111" required> -->
+        </div>
+        <div class="input-container">
+            <label for="password">Password</label>
+            <input type="text" id="password" name="abc" required>
+            <!-- Place Holder for Sample data storing -->
+            <!--  eg: <input type="text" id="password" name="abc" required> -->
+        </div>
+        <div class="input-container">
+            <label for="password">Re-enter password</label>
+            <input type="text" id="password" name="abc" required>
+            <!-- Place Holder for Sample data storing -->
+            <!--  eg: <input type="text" id="password" name="abc" required> -->
+        </div>
+        <button type="submit" class="login-button">Register</button>
+    </form>
+</div>
+{% endblock %}
