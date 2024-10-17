@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Register{% endblock %}
 
 {% block content %}
 <div class="login-container">
-    <h2>Login</h2>
-    <form action="/login" method="post">
+    <h2>Register</h2>
+    <form action="/register" method="post">
         <div class="input-container">
             <label for="username" style="color: black;">Username</label>
             <input type="text" id="username" name="111" required>
@@ -18,10 +18,13 @@
             <!-- Place Holder for Sample data storing -->
             <!--  eg: <input type="text" id="password" name="abc" required> -->
         </div>
-        <button type="submit" class="login-button">Login</button>
+        <div class="input-container">
+            <label for="password" style="color: black;">Re-enter password</label>
+            <input type="text" id="password" name="abc" required>
+            <!-- Place Holder for Sample data storing -->
+            <!--  eg: <input type="text" id="password" name="abc" required> -->
+        </div>
+        <button type="submit" class="login-button">Register</button>
     </form>
-    <p class="register-link" style="color: black;">Don't have an account?
-        <a href="/register" class="arrow-To-Right" >Register here &#x2192;</a>
-    </p>
 </div>
 {% endblock %}

@@ -17,6 +17,12 @@ def login():
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
+@app.route('/register')
+def register():
+    response = make_response(render_template('register.html'))
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
 @app.errorhandler(404)
 def page_not_found(e):
     response = make_response(render_template('404.html'), 404)

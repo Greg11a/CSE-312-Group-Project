@@ -1,12 +1,12 @@
-version: '3'
-
 services:
   app:
     build: .
     ports:
       - '8080:8080'
+    volumes:
+      - .:/root
     environment:
-      WAIT_HOST: mongo:27017 #might need adjustment
+      WAIT_HOST: mongo:27017
   mongo:
     image: mongo:latest
     restart: always
@@ -16,3 +16,10 @@ services:
       - app-network
     volumes:
       - mongo-data:/data/db
+
+networks:
+  app-network:
+
+
+volumes:
+  mongo-data:
