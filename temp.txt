@@ -1,8 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login Page</title>
+    <link href="/static/css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/" class="loginreturn">Return to Home Page</a></h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="chat-icon">Chat</a></li>
+                <li><a href="#" id="login-icon">
+                    <span class="material-icons" alt="Login">account_circle</span>
+                </a></li>
+                    <script  src="/static/js/index.js"></script>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- <a href="/" class="arrow">&#x2190; Home</a> -->
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <div class="input-container">
+                <label for="username" style="color: black;">Username</label>
+                <input type="text" id="username" style="color: black;" placeholder="enter your username here" name="111" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="username" name="111" required> -->
+            </div>
+            <div class="input-container">
+                <label for="password" style="color: black;">Password</label>
+                <input type="text" id="password" style="color: black;" placeholder="enter your password here" name="abc" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="password" name="abc" required> -->
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>
+
+
 :root {
-    --border-color: #e1e8ed;
     --button-color: rgb(29, 155, 240);
-    --button-hover-color: rgb(26, 140, 216);
-    --transition: background-color 0.2s, color 0.2s, scale 0.2s;
+    --border-color: #e1e8ed;
 }
 
 * {
@@ -55,21 +103,10 @@ header nav ul li a {
     padding: 5px 10px;
     display: flex;
     align-items: center;
-    transition: var(--transition);
 }
 
 header nav ul li a .material-icons {
     font-size: 36px;
-}
-
-header nav ul li a:hover {
-    color: var(--button-hover-color);
-    scale: 1.1;
-}
-
-.center {
-    display: flex;
-    justify-content: center;
 }
 
 .container {
@@ -108,15 +145,10 @@ header nav ul li a:hover {
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
-    transition: var(--transition);
-}
-
-.post-input button:hover {
-    background-color: var(--button-hover-color);
 }
 
 .post-feed {
-    padding: 10px;
+    margin-top: 20px;
 }
 
 .post {
@@ -145,28 +177,9 @@ header nav ul li a:hover {
     color: #14171a;
 }
 
-.post img {
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-.like-button {
-    background-color: transparent;
-    color: var(--button-color);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    margin-top: 10px;
-    transition: var(--transition);
-}
-
-.like-button:hover {
-    color: var(--button-hover-color);
-    scale: 1.1;
-}
-
 .arrow {
     padding-top: 100px;
+    display: block;
     color: rgba(240, 184, 29, 0.969);
     font-size: 18px;
     margin-left: 20px; 
@@ -227,12 +240,5 @@ header nav ul li a:hover {
     margin-top: 30px; 
 }
 
-.register-link {
-    color: rgba(240, 184, 29, 0.969);
-    padding: 10px; 
-}
 
-.arrow-To-Right {
-    color:  rgb(29, 155, 240);
-}
 
