@@ -1,6 +1,8 @@
 :root {
-    --button-color: rgb(29, 155, 240);
     --border-color: #e1e8ed;
+    --button-color: rgb(29, 155, 240);
+    --button-hover-color: rgb(26, 140, 216);
+    --transition: background-color 0.2s, color 0.2s, scale 0.2s;
 }
 
 * {
@@ -53,10 +55,21 @@ header nav ul li a {
     padding: 5px 10px;
     display: flex;
     align-items: center;
+    transition: var(--transition);
 }
 
 header nav ul li a .material-icons {
     font-size: 36px;
+}
+
+header nav ul li a:hover {
+    color: var(--button-hover-color);
+    scale: 1.1;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
 }
 
 .container {
@@ -95,10 +108,15 @@ header nav ul li a .material-icons {
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
+    transition: var(--transition);
+}
+
+.post-input button:hover {
+    background-color: var(--button-hover-color);
 }
 
 .post-feed {
-    margin-top: 20px;
+    padding: 10px;
 }
 
 .post {
@@ -127,9 +145,28 @@ header nav ul li a .material-icons {
     color: #14171a;
 }
 
+.post img {
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.like-button {
+    background-color: transparent;
+    color: var(--button-color);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    margin-top: 10px;
+    transition: var(--transition);
+}
+
+.like-button:hover {
+    color: var(--button-hover-color);
+    scale: 1.1;
+}
+
 .arrow {
     padding-top: 100px;
-    display: block;
     color: rgba(240, 184, 29, 0.969);
     font-size: 18px;
     margin-left: 20px; 
@@ -188,5 +225,14 @@ header nav ul li a .material-icons {
     border-radius: 5px; 
     cursor: pointer;
     margin-top: 30px; 
+}
+
+.register-link {
+    color: rgba(240, 184, 29, 0.969);
+    padding: 10px; 
+}
+
+.arrow-To-Right {
+    color:  rgb(29, 155, 240);
 }
 
