@@ -5,16 +5,12 @@
 {% block content %}
 
 
-<a href="/login" class="arrow">&#x2190; Login</a>
-
 <div class="login-container">
     <h2>Register</h2>
     <form action="/register" method="post">
         <div class="input-container">
 
             <label for="username" style="color: black;">Username</label>
-
-            <label for="username">Username</label>
 
             <input type="text" id="username" name="111" required>
             <!-- Place Holder for Sample data storing -->
@@ -24,8 +20,6 @@
 
             <label for="password" style="color: black;">Password</label>
 
-            <label for="password">Password</label>
-
             <input type="text" id="password" name="abc" required>
             <!-- Place Holder for Sample data storing -->
             <!--  eg: <input type="text" id="password" name="abc" required> -->
@@ -34,13 +28,15 @@
 
             <label for="password" style="color: black;">Re-enter password</label>
 
-            <label for="password">Re-enter password</label>
-
             <input type="text" id="password" name="abc" required>
             <!-- Place Holder for Sample data storing -->
             <!--  eg: <input type="text" id="password" name="abc" required> -->
         </div>
+        <p class="login-link" style="color: black;">Already have a account?
+            <a href="/login" class="arrow-To-Right" >Go back to Login!</a>
+        </p>
         <button type="submit" class="login-button">Register</button>
+
     </form>
 </div>
 {% endblock %}

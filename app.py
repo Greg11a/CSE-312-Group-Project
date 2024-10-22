@@ -1,27 +1,60 @@
-from flask import Flask, request, render_template, send_from_directory, make_response
+from flask import Flask, request, render_template, send_from_directory, make_response, redirect, url_for, flash
+from db import get_user_by_username, create_user
+from auth import extract_credential, validate_password
 
+import bcrypt
 app = Flask(__name__)
 
 
-# url: http[80]/http[443]://www.something.com:443/path
-# Need more adjustments. 
 @app.route('/') #root route
 def home():
     response = make_response(render_template('index.html'))
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    response = make_response(render_template('login.html'))
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = get_user_by_username(username)
+        if user:
+            if bcrypt.checkpw(password.encode('utf-8'), user['password']):
+                flash('Login successful!', 'success')
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid username or password', 'error')
+        else:
+            flash('Invalid username or password', 'error')
+    
+    return render_template('login.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    response = make_response(render_template('register.html'))
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
+    if request.method == 'POST':
+        try:
+            username, password = extract_credential(request.query_string.decode('utf-8'))
+            
+            is_valid, validation_message = validate_password(password)
+            if not is_valid:
+                flash(validation_message, 'error')
+                return render_template('register.html')
+            
+            existing_user = get_user_by_username(username)
+            if existing_user:
+                flash('User already exists!', 'error')
+                return render_template('register.html')
+            
+            create_user(username, password)
+            flash('Registration successful! You can now log in.', 'success')
+            return redirect(url_for('login'))
+        
+        except ValueError as e:
+            flash(str(e), 'error')
+            return render_template('register.html')
+    
+    return render_template('register.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -50,12 +83,9 @@ def hello_world():
 @app.after_request
 def secure_header(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    # url = request.url
-    # if url.endswith('.css'):
-    #     response.headers['Content-Type'] = 'text/css'
-    # elif url.endswith('.js'):
-    #     response.headers['Content-Type'] = 'text/javascript'
     return response
+
+# ---------------------------Other Implementations---------------------------
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
