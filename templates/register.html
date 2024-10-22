@@ -1,42 +1,25 @@
 {% extends "base.html" %}
-
 {% block title %}Register{% endblock %}
-
 {% block content %}
-
-
 <div class="login-container">
     <h2>Register</h2>
     <form action="/register" method="post">
         <div class="input-container">
-
             <label for="username" style="color: black;">Username</label>
-
-            <input type="text" id="username" name="111" required>
-            <!-- Place Holder for Sample data storing -->
-            <!--  eg: <input type="text" id="username" name="111" required> -->
+            <input type="text" id="username" name="username" required>
         </div>
         <div class="input-container">
-
             <label for="password" style="color: black;">Password</label>
-
-            <input type="text" id="password" name="abc" required>
-            <!-- Place Holder for Sample data storing -->
-            <!--  eg: <input type="text" id="password" name="abc" required> -->
+            <input type="text" id="password" name="password" required>
         </div>
         <div class="input-container">
-
-            <label for="password" style="color: black;">Re-enter password</label>
-
-            <input type="text" id="password" name="abc" required>
-            <!-- Place Holder for Sample data storing -->
-            <!--  eg: <input type="text" id="password" name="abc" required> -->
+            <label for="confirm_password" style="color: black;">Re-enter password</label>
+            <input type="text" id="confirm_password" name="confirm_password" required>
         </div>
         <p class="login-link" style="color: black;">Already have a account?
-            <a href="/login" class="arrow-To-Right" >Go back to Login!</a>
+            <a href="/login" class="arrow-To-Right">Go back to Login!</a>
         </p>
         <button type="submit" class="login-button">Register</button>
-
     </form>
 </div>
 {% endblock %}

@@ -5,21 +5,13 @@ services:
       - '8080:8080'
     volumes:
       - .:/root
-    environment:
-      WAIT_HOST: mongo:27017
-  mongo:
+  db:
     image: mongo:latest
     restart: always
     ports:
       - "27017:27017"
-    networks:
-      - app-network
     volumes:
       - mongo-data:/data/db
-
-networks:
-  app-network:
-
 
 volumes:
   mongo-data:
