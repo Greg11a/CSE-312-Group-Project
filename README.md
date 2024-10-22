@@ -6,6 +6,7 @@ USE pip install flask TO INSTALL FLASK
 #Please add your commit description below before next meeting, so that other member can understand what changes you have made.
 
 Project Logs:
+10/22/2024 Zijun Wei: Modified Login/Register.html. Partially implemented Login/Register (BUGs exist, but fixed by other teammate.)
 10/03/2024 Zijun Wei: Rebuild static folder. Modified app.py. Now each file has correct mime type and nosniff
 
 10/03/2024 Zijun Wei: Modified index html so that post container can automatically adjust size fits to contents. modified index.css. created 404 html. uploaded flower image. Fixed a bug in docker-compose.yml. Modified app.py so that the web now can correctly return 404 page when Page not found.
