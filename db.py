@@ -24,6 +24,6 @@ def create_user(username, password):
     user_data = {
         "username": username,
         "salt": salt,
-        # 'password': hashed_password
+        'password': hashed_password
     }
     users_collection.insert_one(user_data)

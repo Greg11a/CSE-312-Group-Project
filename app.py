@@ -18,7 +18,7 @@ app.secret_key = secrets.token_hex(16)
 
 
 @app.route("/")  # root route
-def home():
+def index():
     response = make_response(render_template("index.html"))
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
@@ -33,11 +33,13 @@ def login():
         if user:
             if bcrypt.checkpw(password.encode("utf-8"), user["password"]):
                 flash("Login successful!", "success")
-                return redirect(url_for("home"))
+                return redirect(url_for("index"))
             else:
                 flash("Invalid username or password", "error")
+                return render_template("login.html", message="Invalid username or password")
         else:
             flash("Invalid username or password", "error")
+            return render_template("login.html", message="Invalid username or password")
     return render_template("login.html")
 
 
@@ -45,23 +47,23 @@ def login():
 def register():
     if request.method == "POST":
         try:
-            username, password = extract_credential(
-                request.query_string.decode("utf-8")
-            )
+            username = request.form.get("username")
+            password = request.form.get("password")
             is_valid, validation_message = validate_password(password)
             if not is_valid:
                 flash(validation_message, "error")
-                return render_template("register.html")
+                return render_template("register.html", message=validation_message)
             existing_user = get_user_by_username(username)
             if existing_user:
                 flash("User already exists!", "error")
-                return render_template("register.html")
+                return render_template("register.html", message="User already exists!")
             create_user(username, password)
             flash("Registration successful! You can now log in.", "success")
             return redirect(url_for("login"))
         except ValueError as e:
             flash(str(e), "error")
-            return render_template("register.html")
+            flash("Registration failed!", "error")
+            return render_template("register.html", message="Registration failed!")
     return render_template("register.html")
 
 
