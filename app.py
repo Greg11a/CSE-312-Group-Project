@@ -1,7 +1,10 @@
 import bcrypt
 import secrets
+import hashlib
+import uuid
+import time
 from auth import extract_credential, validate_password
-from db import get_user_by_username, create_user
+from db import get_user_by_username, create_user, store_auth_token
 from flask import (
     Flask,
     request,
@@ -16,6 +19,8 @@ from flask import (
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
+# --------------------------Helper Functions---------------------------
+# ---------------------------------------------------------------------
 
 @app.route("/")  # root route
 def index():
@@ -32,8 +37,13 @@ def login():
         user = get_user_by_username(username)
         if user:
             if bcrypt.checkpw(password.encode("utf-8"), user["password"]):
+                auth_token = str(uuid.uuid4())
+                hash_auth_token = hashlib.sha256(auth_token.encode("utf-8")).hexdigest()
+                store_auth_token(username, hash_auth_token, time.time() + 3600)
+                response = make_response(redirect(url_for("index")))
+                response.set_cookie('auth_token', auth_token, max_age=60*60, httponly=True)
                 flash("Login successful!", "success")
-                return redirect(url_for("index"))
+                return response
             else:
                 flash("Invalid username or password", "error")
                 return render_template("login.html", message="Invalid username or password")

@@ -7,7 +7,7 @@ import bcrypt
 client = MongoClient("mongodb://db:27017/")
 db = client["user_database"]
 users_collection = db["users"]
-
+tokens_collection = db["auth_tokens"]
 
 def get_collection(collection_name):
     return db[collection_name]
@@ -27,3 +27,11 @@ def create_user(username, password):
         'password': hashed_password
     }
     users_collection.insert_one(user_data)
+
+def store_auth_token(username, token, time):
+    data = {
+        "username": username,
+        "hashed_auth_token": token,
+        "expire": time
+    }
+    tokens_collection.insert_one(data)
