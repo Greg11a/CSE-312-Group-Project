@@ -49,6 +49,7 @@ def register():
         try:
             username = request.form.get("username")
             password = request.form.get("password")
+            comfirm_password = request.form.get("confirm_password")
             is_valid, validation_message = validate_password(password)
             if not is_valid:
                 flash(validation_message, "error")
@@ -57,6 +58,9 @@ def register():
             if existing_user:
                 flash("User already exists!", "error")
                 return render_template("register.html", message="User already exists!")
+            if password != comfirm_password:
+                flash("Password mismatched!", "error")
+                return render_template("register.html", message="Password Mismatched!")
             create_user(username, password)
             flash("Registration successful! You can now log in.", "success")
             return redirect(url_for("login"))
