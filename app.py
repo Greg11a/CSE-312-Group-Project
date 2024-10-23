@@ -64,6 +64,18 @@ def login():
     return render_template("login.html")
 
 
+@app.route("/logout")
+def logout():
+    auth_token = request.cookies.get("auth_token")
+    if auth_token:
+            token_hash = hashlib.sha256(auth_token.encode('utf-8')).hexdigest()
+            delete_auth_token(token_hash)
+    response = make_response(redirect(url_for("index")))
+    response.set_cookie('auth_token', '', max_age=0, httponly=True)
+    flash("Logout Successfully!", "success")
+    return response
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
