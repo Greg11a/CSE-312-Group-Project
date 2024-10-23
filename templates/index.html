@@ -5,18 +5,12 @@
 {% block content %}
 <div class="container">
     <main class="main-content">
-        {% if username %}
-            <p>Welcome, {{ username }}!</p>
-            <form action="{{ url_for('logout') }}" method="post">
-                <button type="submit">Logout</button>
-            </form>
-        {% else %}
-            <p>You are not logged in.</p>
-            <a href="{{ url_for('login') }}">Login</a> or
-            <a href="{{ url_for('register') }}">Register</a>
-        {% endif %}
         <div class="post-input">
-            <textarea placeholder="What is happening?!" rows="3"></textarea>
+            {% if username %}
+                <textarea placeholder="Welcome aboard {{username}}! What do you want to share today?" rows="3"></textarea>
+            {% else  %}
+                <textarea placeholder="What is happening?! Login to make posts." rows="3"></textarea>
+            {% endif %}
             <button>Post</button>
         </div>
         <div class="post-feed">

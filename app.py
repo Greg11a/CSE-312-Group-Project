@@ -78,16 +78,16 @@ def login():
     return render_template("login.html")
 
 
-# @app.route("/logout")
-# def logout():
-#     auth_token = request.cookies.get("auth_token")
-#     if auth_token:
-#             token_hash = hashlib.sha256(auth_token.encode('utf-8')).hexdigest()
-#             delete_auth_token(token_hash)
-#     response = make_response(redirect(url_for("index")))
-#     response.set_cookie('auth_token', '', max_age=0, httponly=True)
-#     flash("Logout Successfully!", "success")
-#     return response
+@app.route("/logout")
+def logout():
+    auth_token = request.cookies.get("auth_token")
+    if auth_token:
+            token_hash = hashlib.sha256(auth_token.encode('utf-8')).hexdigest()
+            delete_auth_token(token_hash)
+    response = make_response(redirect(url_for("index")))
+    response.set_cookie('auth_token', '', max_age=0, httponly=True)
+    flash("Logout Successfully!", "success")
+    return response
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -116,20 +116,6 @@ def register():
             flash("Registration failed!", "error")
             return render_template("register.html", message="Registration failed!")
     return render_template("register.html")
-
-
-@app.route("/logout", methods=["POST"])
-def logout():
-    username = get_current_user()
-    if username:
-        token = request.cookies.get("auth_token")
-        token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
-        tokens_collection = get_collection("auth_tokens")
-        tokens_collection.delete_one({"hashed_auth_token": token_hash})
-    response = make_response(redirect(url_for("index")))
-    response.delete_cookie("auth_token")
-    flash("You have been logged out.", "success")
-    return response
 
 
 @app.errorhandler(404)

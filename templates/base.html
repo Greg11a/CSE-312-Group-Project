@@ -20,7 +20,9 @@
         <h1><a href="/">App</a></h1>
         <nav>
             <ul>
+                {% if username %}
                 <li><a href="/logout" id="chat-icon">Logout</a></li>
+                {% endif %}
                 <li><a href="/login" id="login-icon">
                         <span class="material-icons" alt="Login">account_circle</span>
                     </a></li>
