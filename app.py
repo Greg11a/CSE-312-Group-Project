@@ -4,7 +4,7 @@ import hashlib
 import uuid
 import time
 from auth import extract_credential, validate_password
-from db import get_user_by_username, create_user, store_auth_token
+from db import get_user_by_username, create_user, store_auth_token, get_collection, delete_auth_token
 from flask import (
     Flask,
     request,
@@ -20,11 +20,22 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 # --------------------------Helper Functions---------------------------
+def get_current_user():
+    token = request.cookies.get('auth_token')
+    if not token:
+        return None
+    token_hash = hashlib.sha256(token.encode('utf-8')).hexdigest()
+    tokens_collection = get_collection('auth_tokens')
+    auth_token = tokens_collection.find_one({'hashed_auth_token': token_hash})
+    if auth_token and auth_token['expire'] > time.time():
+        return auth_token['username']
+    return None
 # ---------------------------------------------------------------------
 
 @app.route("/")  # root route
 def index():
-    response = make_response(render_template("index.html"))
+    username=get_current_user()
+    response = make_response(render_template("index.html", username=username))
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
@@ -79,6 +90,19 @@ def register():
             flash("Registration failed!", "error")
             return render_template("register.html", message="Registration failed!")
     return render_template("register.html")
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    username = get_current_user()
+    if username:
+        token = request.cookies.get('auth_token')
+        token_hash = hashlib.sha256(token.encode('utf-8')).hexdigest()
+        tokens_collection = get_collection('auth_tokens')
+        tokens_collection.delete_one({'hashed_auth_token': token_hash})
+    response = make_response(redirect(url_for('index')))
+    response.delete_cookie('auth_token')
+    flash("You have been logged out.", "success")
+    return response
 
 
 @app.errorhandler(404)
