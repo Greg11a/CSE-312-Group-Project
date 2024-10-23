@@ -35,3 +35,6 @@ def store_auth_token(username, token, time):
         "expire": time
     }
     tokens_collection.insert_one(data)
+
+def delete_auth_token(hashed_auth_token):
+    tokens_collection.delete_one({"auth_token": hashed_auth_token})
