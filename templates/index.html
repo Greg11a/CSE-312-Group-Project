@@ -24,8 +24,7 @@
                     <span>@{{ post.username }} · {{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>
-                <div>
-                    {% if username %}
+                <div class="likes">
                     <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">
                         <button type="submit" class="like-button" liked="false">
                             <span class="material-icons">
@@ -36,11 +35,8 @@
                                 {% endif %}
                             </span>
                         </button>
-                        <span>{{ post.likes | length }}</span>
                     </form>
-                    {% else %}
-                    <p><a href="{{ url_for('login') }}">Login</a> to like posts.</p>
-                    {% endif %}
+                    <span class="like-count">{{ post.likes | length }}</span>
                 </div>
             </div>
             {% endfor %}

@@ -1,238 +1,246 @@
 :root {
-    --border-color: #e1e8ed;
-    --button-color: rgb(29, 155, 240);
-    --button-hover-color: rgb(26, 140, 216);
-    --transition: background-color 0.2s, color 0.2s, scale 0.2s;
+  --transition: background-color 0.2s, color 0.2s, scale 0.2s;
+  --border-color: #e1e8ed;
+  --button-color: rgb(29, 155, 240);
+  --button-hover-color: rgb(26, 140, 216);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background-color: #f2f3f5;
-    display: flex;
-    justify-content: center;
+  background-color: #f2f3f5;
+  display: flex;
+  justify-content: center;
 }
 
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+  align-items: center;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  padding: 15px 30px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 header h1 a {
-    text-decoration: none;
-    color: black;
-    font-size: 24px;
+  color: black;
+  font-size: 24px;
+  text-decoration: none;
 }
 
 header nav ul {
-    list-style: none;
-    display: flex;
-    align-items: center;
+  align-items: center;
+  display: flex;
+  list-style: none;
 }
 
 header nav ul li {
-    margin: 0px 10px;
+  margin: 0px 10px;
 }
 
 header nav ul li a {
-    text-decoration: none;
-    color: var(--button-color);
-    font-size: 24px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    transition: var(--transition);
+  align-items: center;
+  color: var(--button-color);
+  display: flex;
+  font-size: 24px;
+  padding: 5px 10px;
+  text-decoration: none;
+  transition: var(--transition);
 }
 
 header nav ul li a .material-icons {
-    font-size: 36px;
+  font-size: 36px;
 }
 
 header nav ul li a:hover {
-    color: var(--button-hover-color);
-    scale: 1.1;
+  color: var(--button-hover-color);
+  scale: 1.1;
 }
 
 .center {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .container {
-    display: grid;
-    gap: 20px;
-    max-width: 600px;
-    width: 100%;
-    padding: 100px 20px;
+  display: grid;
+  gap: 20px;
+  max-width: 600px;
+  padding: 100px 20px;
+  width: 100%;
 }
 
 .main-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
 }
 
 .post-input {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .post-input textarea {
-    width: 100%;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    resize: none;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px;
+  resize: none;
+  width: 100%;
 }
 
 .post-input button {
-    background-color: var(--button-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: var(--transition);
+  background-color: var(--button-color);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  transition: var(--transition);
 }
 
 .post-input button:hover {
-    background-color: var(--button-hover-color);
+  background-color: var(--button-hover-color);
 }
 
 .post-feed {
-    padding: 10px;
+  padding: 10px;
 }
 
 .post {
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 0;
 }
 
 .post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
 
 .post-header h3 {
-    font-size: 18px;
-    margin-right: 10px;
+  font-size: 18px;
+  margin-right: 10px;
 }
 
 .post-header span {
-    color: #657786;
-    font-size: 14px;
+  color: #657786;
+  font-size: 14px;
 }
 
 .post p {
-    font-size: 16px;
-    color: #14171a;
+  color: #14171a;
+  font-size: 16px;
 }
 
 .post img {
-    border-radius: 5px;
-    margin-top: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.likes {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .like-button {
-    background-color: transparent;
-    color: var(--button-color);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    margin-top: 10px;
-    transition: var(--transition);
+  background-color: transparent;
+  border: none;
+  color: var(--button-color);
+  cursor: pointer;
+  margin-top: 5px;
+  transition: var(--transition);
 }
 
 .like-button:hover {
-    color: var(--button-hover-color);
-    scale: 1.1;
+  color: var(--button-hover-color);
+  scale: 1.1;
+}
+
+.like-count {
+  font-size: 20px;
 }
 
 .arrow {
-    padding-top: 100px;
-    color: rgba(240, 184, 29, 0.969);
-    font-size: 18px;
-    margin-left: 20px; 
+  color: rgba(240, 184, 29, 0.969);
+  font-size: 18px;
+  margin-left: 20px;
+  padding-top: 100px;
 }
 
 .login-container {
-    margin: 100px;
-    position: relative;
-    left: -150px;
-    top: 100px;
-    padding: 30px;
-    padding-top: 50px;
-    padding-bottom: 70px;
-    display: block;
-    max-width: 400px; 
-    margin-left: auto; 
-    margin-right: 50px; 
-    display: flex;
-    flex-direction: column;
-    gap: 25px; 
-    box-shadow: 12px 12px 2px 1px rgb(29, 155, 240);
-    border: solid;
-
+  border: solid;
+  box-shadow: 12px 12px 2px 1px rgb(29, 155, 240);
+  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  left: -150px;
+  margin: 100px;
+  margin-left: auto;
+  margin-right: 50px;
+  max-width: 400px;
+  padding: 30px;
+  padding-bottom: 70px;
+  padding-top: 50px;
+  position: relative;
+  top: 100px;
 }
 
-
 .login-container h2 {
-    color: rgb(29, 155, 240);
-    font-size: 30px; 
+  color: rgb(29, 155, 240);
+  font-size: 30px;
 }
 
 .input-container {
-    margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .input-container label {
-    font-size: 15px; 
-    color: rgba(240, 184, 29, 0.969);
+  color: rgba(240, 184, 29, 0.969);
+  font-size: 15px;
 }
 
 .input-container input {
-    padding: 15px; 
-    font-size: 15px; 
-    width: 338px;
-    height:10px;
-    border-radius: 5px;
-    border: 1px solid rgb(162, 167, 171);
+  border: 1px solid rgb(162, 167, 171);
+  border-radius: 5px;
+  font-size: 15px;
+  height: 10px;
+  padding: 15px;
+  width: 338px;
 }
 
 .login-button {
-    padding: 10px;
-    font-size: 15px; 
-    background-color: rgb(29, 155, 240);
-    color: white;
-    border: none;
-    border-radius: 5px; 
-    cursor: pointer;
-    margin-top: 30px; 
+  background-color: rgb(29, 155, 240);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 30px;
+  padding: 10px;
 }
 
 .register-link {
-    color: rgba(240, 184, 29, 0.969);
-    padding: 10px; 
+  color: rgba(240, 184, 29, 0.969);
+  padding: 10px;
 }
 
 .arrow-To-Right {
-    color:  rgb(29, 155, 240);
+  color: rgb(29, 155, 240);
 }
-
