@@ -30,4 +30,4 @@ def store_auth_token(username, token, time):
 
 
 def delete_auth_token(hashed_auth_token):
-    tokens_collection.delete_one({"auth_token": hashed_auth_token})
+    tokens_collection.delete_one({"hashed_auth_token": hashed_auth_token})
