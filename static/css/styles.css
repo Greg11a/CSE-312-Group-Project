@@ -251,3 +251,9 @@ header nav ul li a:hover {
 .arrow-To-Right {
   color: rgb(29, 155, 240);
 }
+
+.todo-image{
+  position: fixed;
+  top: 180px;
+  left: 230px;
+}
