@@ -13,7 +13,9 @@
                 <button type="submit">Post</button>
             </form>
             {% else %}
-            <p>Welcome! <a href="{{ url_for('login') }}">Login</a> to make posts.</p>
+            <div class="welcome-message">
+                <p>Welcome! <a href="{{ url_for('login') }}">Login</a> to make posts.</p>
+            </div>
             {% endif %}
         </div>
         <div class="post-feed">
