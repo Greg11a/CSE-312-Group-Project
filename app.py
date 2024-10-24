@@ -166,22 +166,18 @@ def create_post():
 def like_post(post_id):
     username = get_current_user()
     if not username:
-        flash("You need to be logged in to like a post!", "error")
         return redirect(url_for("login"))
     post = db.posts_collection.find_one({"_id": ObjectId(post_id)})
     if not post:
-        flash("Post not found!", "error")
         return redirect(url_for("index"))
     if username in post["likes"]:
         db.posts_collection.update_one(
             {"_id": ObjectId(post_id)}, {"$pull": {"likes": username}}
         )
-        flash("Post unliked successfully!", "success")
     else:
         db.posts_collection.update_one(
             {"_id": ObjectId(post_id)}, {"$push": {"likes": username}}
         )
-        flash("Post liked successfully!", "success")
     return redirect(url_for("index"))
 
 
