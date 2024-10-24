@@ -21,7 +21,7 @@
             <div class="post">
                 <div class="post-header">
                     <h3>{{ post.username }}</h3>
-                    <span>@{{ post.username }} · {{ post.timestamp | format_timestamp }}</span>
+                    <span>{{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>
                 <div class="likes">
@@ -42,8 +42,8 @@
             {% endfor %}
             <div class="post">
                 <div class="post-header">
-                    <h3>Jesse Hartloff</h3>
-                    <span>@jessehartloff · 1d</span>
+                    <h3>jessehartloff</h3>
+                    <span>1d</span>
                 </div>
                 <p>This is a sample post.</p>
                 <button class="like-button" liked="false">
@@ -52,8 +52,8 @@
             </div>
             <div class="post">
                 <div class="post-header">
-                    <h3>Paul Dickson</h3>
-                    <span>@pauldickson · 2d</span>
+                    <h3>pauldickson</h3>
+                    <span>2d</span>
                 </div>
                 <p>This is another sample post.</p>
                 <button class="like-button" liked="false">
@@ -62,8 +62,8 @@
             </div>
             <div class="post">
                 <div class="post-header">
-                    <h3>Zijun Wei</h3>
-                    <span>@zijunwei · 4d</span>
+                    <h3>zijunwei</h3>
+                    <span>4d</span>
                 </div>
                 <p>This is a sample post of Image.</p>
                 <div class="center">
