@@ -1,11 +1,8 @@
-import bcrypt
-import db
-import hashlib
-import secrets
-import time
-import uuid
 from auth import extract_credential, validate_password
+import bcrypt
+from bson import ObjectId
 from datetime import datetime
+import db
 from flask import (
     Flask,
     request,
@@ -16,6 +13,11 @@ from flask import (
     url_for,
     flash,
 )
+import hashlib
+import secrets
+import time
+import uuid
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -138,9 +140,35 @@ def create_post():
         "username": username,
         "content": post_content,
         "timestamp": time.time(),
+        "likes": [],
     }
     db.posts_collection.insert_one(post_data)
     flash("Post created successfully!", "success")
+    return redirect(url_for("index"))
+
+
+@app.route("/like/<post_id>", methods=["POST"])
+def like_post(post_id):
+    username = get_current_user()
+    if not username:
+        flash("You need to be logged in to like a post!", "error")
+        return redirect(url_for("login"))
+    post = db.posts_collection.find_one({"_id": ObjectId(post_id)})
+    if not post:
+        flash("Post not found!", "error")
+        return redirect(url_for("index"))
+    if username in post["likes"]:
+        db.posts_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$pull": {"likes": username}}
+        )
+        flash("Post unliked successfully!", "success")
+    else:
+        db.posts_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$push": {"likes": username}}
+        )
+        flash("Post liked successfully!", "success")
     return redirect(url_for("index"))
 
 
