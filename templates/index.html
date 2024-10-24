@@ -7,13 +7,28 @@
     <main class="main-content">
         <div class="post-input">
             {% if username %}
-                <textarea placeholder="Welcome aboard {{username}}! What do you want to share today?" rows="3"></textarea>
-            {% else  %}
-                <textarea placeholder="What is happening?! Login to make posts." rows="3"></textarea>
+            <form action="{{ url_for('create_post') }}" method="POST">
+                <textarea name="post_content"
+                    placeholder="Welcome aboard {{username}}! What do you want to share today?" rows="3"></textarea>
+                <button type="submit">Post</button>
+            </form>
+            {% else %}
+            <p>Welcome! <a href="{{ url_for('login') }}">Login</a> to make posts.</p>
             {% endif %}
-            <button>Post</button>
         </div>
         <div class="post-feed">
+            {% for post in posts %}
+            <div class="post">
+                <div class="post-header">
+                    <h3>{{ post.username }}</h3>
+                    <span>{{ post.timestamp | format_timestamp('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                <p>{{ post.content }}</p>
+                <button class="like-button" liked="false">
+                    <span class="material-icons">thumb_up_off_alt</span>
+                </button>
+            </div>
+            {% endfor %}
             <div class="post">
                 <div class="post-header">
                     <h3>Jesse Hartloff</h3>

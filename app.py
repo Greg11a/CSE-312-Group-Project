@@ -1,16 +1,11 @@
 import bcrypt
-import secrets
+import db
 import hashlib
-import uuid
+import secrets
 import time
+import uuid
 from auth import extract_credential, validate_password
-from db import (
-    get_user_by_username,
-    create_user,
-    store_auth_token,
-    get_collection,
-    delete_auth_token,
-)
+from datetime import datetime
 from flask import (
     Flask,
     request,
@@ -24,6 +19,7 @@ from flask import (
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+app.jinja_env.autoescape = True
 
 
 # --------------------------Helper Functions---------------------------
@@ -32,7 +28,7 @@ def get_current_user():
     if not token:
         return None
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
-    tokens_collection = get_collection("auth_tokens")
+    tokens_collection = db.get_collection("auth_tokens")
     auth_token = tokens_collection.find_one({"hashed_auth_token": token_hash})
     if auth_token and auth_token["expire"] > time.time():
         return auth_token["username"]
@@ -45,9 +41,19 @@ def get_current_user():
 @app.route("/")  # root route
 def index():
     username = get_current_user()
-    response = make_response(render_template("index.html", username=username))
+    posts = db.posts_collection.find().sort("timestamp", -1)
+    response = make_response(
+        render_template("index.html", username=username, posts=posts)
+    )
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
+
+
+def format_timestamp(value, format="%Y-%m-%d %H:%M:%S"):
+    return datetime.fromtimestamp(value).strftime(format)
+
+
+app.jinja_env.filters["format_timestamp"] = format_timestamp
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -55,12 +61,12 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        user = get_user_by_username(username)
+        user = db.get_user_by_username(username)
         if user:
             if bcrypt.checkpw(password.encode("utf-8"), user["password"]):
                 auth_token = str(uuid.uuid4())
                 hash_auth_token = hashlib.sha256(auth_token.encode("utf-8")).hexdigest()
-                store_auth_token(username, hash_auth_token, time.time() + 3600)
+                db.store_auth_token(username, hash_auth_token, time.time() + 3600)
                 response = make_response(redirect(url_for("index")))
                 response.set_cookie(
                     "auth_token", auth_token, max_age=60 * 60, httponly=True
@@ -82,10 +88,10 @@ def login():
 def logout():
     auth_token = request.cookies.get("auth_token")
     if auth_token:
-            token_hash = hashlib.sha256(auth_token.encode('utf-8')).hexdigest()
-            delete_auth_token(token_hash)
+        token_hash = hashlib.sha256(auth_token.encode("utf-8")).hexdigest()
+        db.delete_auth_token(token_hash)
     response = make_response(redirect(url_for("index")))
-    response.set_cookie('auth_token', '', max_age=0, httponly=True)
+    response.set_cookie("auth_token", "", max_age=0, httponly=True)
     flash("Logout Successfully!", "success")
     return response
 
@@ -101,14 +107,14 @@ def register():
             if not is_valid:
                 flash(validation_message, "error")
                 return render_template("register.html", message=validation_message)
-            existing_user = get_user_by_username(username)
+            existing_user = db.get_user_by_username(username)
             if existing_user:
                 flash("User already exists!", "error")
                 return render_template("register.html", message="User already exists!")
             if password != comfirm_password:
                 flash("Password mismatched!", "error")
                 return render_template("register.html", message="Password Mismatched!")
-            create_user(username, password)
+            db.create_user(username, password)
             flash("Registration successful! You can now log in.", "success")
             return redirect(url_for("login"))
         except ValueError as e:
@@ -116,6 +122,26 @@ def register():
             flash("Registration failed!", "error")
             return render_template("register.html", message="Registration failed!")
     return render_template("register.html")
+
+
+@app.route("/create_post", methods=["POST"])
+def create_post():
+    username = get_current_user()
+    if not username:
+        flash("You need to be logged in to post!", "error")
+        return redirect(url_for("login"))
+    post_content = request.form.get("post_content")
+    if not post_content.strip():
+        flash("Post content cannot be empty!", "error")
+        return redirect(url_for("index"))
+    post_data = {
+        "username": username,
+        "content": post_content,
+        "timestamp": time.time(),
+    }
+    db.posts_collection.insert_one(post_data)
+    flash("Post created successfully!", "success")
+    return redirect(url_for("index"))
 
 
 @app.errorhandler(404)
