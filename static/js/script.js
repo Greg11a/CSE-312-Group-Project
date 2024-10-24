@@ -15,3 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dropbtn = document.getElementById("dropbtn");
+    const dropdownContent = document.getElementById("dropdown-content");
+
+    if (dropbtn && dropdownContent) {
+        dropdownContent.style.minWidth = dropbtn.offsetWidth + "px";
+    }
+});
