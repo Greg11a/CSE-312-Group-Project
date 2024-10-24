@@ -21,11 +21,10 @@
         <nav>
             <ul>
                 {% if username %}
-                <li><a href="/logout" id="chat-icon">Logout</a></li>
+                <li><a href="/logout">Logout</a></li>
+                {% else %}
+                <li><a href="/login">Login</a></li>
                 {% endif %}
-                <li><a href="/login" id="login-icon">
-                        <span class="material-icons" alt="Login">account_circle</span>
-                    </a></li>
             </ul>
         </nav>
     </header>

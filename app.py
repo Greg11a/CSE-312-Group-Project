@@ -1,7 +1,7 @@
 from auth import extract_credential, validate_password
 import bcrypt
 from bson import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 import db
 from flask import (
     Flask,
@@ -51,8 +51,23 @@ def index():
     return response
 
 
-def format_timestamp(value, format="%Y-%m-%d %H:%M:%S"):
-    return datetime.fromtimestamp(value).strftime(format)
+def format_timestamp(timestamp):
+    now = datetime.now()
+    post_time = datetime.fromtimestamp(timestamp)
+    diff = now - post_time
+    if diff < timedelta(minutes=1):
+        return "Just now"
+    elif diff < timedelta(hours=1):
+        minutes = int(diff.total_seconds() // 60)
+        return f"{minutes}m"
+    elif diff < timedelta(days=1):
+        hours = int(diff.total_seconds() // 3600)
+        return f"{hours}h"
+    elif diff < timedelta(days=7):
+        days = diff.days
+        return f"{days}d"
+    else:
+        return post_time.strftime("%b %d, %Y")
 
 
 app.jinja_env.filters["format_timestamp"] = format_timestamp
@@ -159,14 +174,12 @@ def like_post(post_id):
         return redirect(url_for("index"))
     if username in post["likes"]:
         db.posts_collection.update_one(
-            {"_id": ObjectId(post_id)},
-            {"$pull": {"likes": username}}
+            {"_id": ObjectId(post_id)}, {"$pull": {"likes": username}}
         )
         flash("Post unliked successfully!", "success")
     else:
         db.posts_collection.update_one(
-            {"_id": ObjectId(post_id)},
-            {"$push": {"likes": username}}
+            {"_id": ObjectId(post_id)}, {"$push": {"likes": username}}
         )
         flash("Post liked successfully!", "success")
     return redirect(url_for("index"))

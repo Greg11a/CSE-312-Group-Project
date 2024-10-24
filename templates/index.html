@@ -21,7 +21,7 @@
             <div class="post">
                 <div class="post-header">
                     <h3>{{ post.username }}</h3>
-                    <span>{{ post.timestamp | format_timestamp('%Y-%m-%d %H:%M:%S') }}</span>
+                    <span>@{{ post.username }} · {{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>
                 <div>
