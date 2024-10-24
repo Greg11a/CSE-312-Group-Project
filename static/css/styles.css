@@ -154,7 +154,7 @@ header nav ul li a:hover {
 .likes {
   align-items: center;
   display: flex;
-  gap: 10px;
+  gap: 5px;
   margin-top: 10px;
 }
 
