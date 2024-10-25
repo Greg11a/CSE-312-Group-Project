@@ -8,6 +8,7 @@
         <div class="post-input">
             {% if username %}
             <form action="{{ url_for('create_post') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <textarea name="post_content"
                     placeholder="Welcome aboard {{username}}! What do you want to share today?" rows="3"></textarea>
                 <button type="submit">Post</button>
@@ -26,19 +27,28 @@
                     <span>{{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>
-                <div class="likes">
-                    <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">
-                        <button type="submit" class="like-button" liked="false">
-                            <span class="material-icons">
-                                {% if username in post.likes %}
-                                thumb_up
-                                {% else %}
-                                thumb_up_off_alt
-                                {% endif %}
-                            </span>
-                        </button>
+                <div class="post-actions">
+                    <div class="likes">
+                        <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="like-button" liked="false">
+                                <span class="material-icons">
+                                    {% if username in post.likes %}
+                                    thumb_up
+                                    {% else %}
+                                    thumb_up_off_alt
+                                    {% endif %}
+                                </span>
+                            </button>
+                        </form>
+                        <span class="like-count">{{ post.likes | length }}</span>
+                    </div>
+                    {% if username == post.username %}
+                    <form action="{{ url_for('delete_post', post_id=post._id) }}" method="POST" class="delete-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="delete-button">Delete</button>
                     </form>
-                    <span class="like-count">{{ post.likes | length }}</span>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
