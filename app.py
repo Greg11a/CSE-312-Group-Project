@@ -17,12 +17,13 @@ import hashlib
 import secrets
 import time
 import uuid
+from flask_wtf.csrf import CSRFProtect
 
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.jinja_env.autoescape = True
-
+csrf = CSRFProtect(app)
 
 # --------------------------Helper Functions---------------------------
 def get_current_user():
@@ -180,6 +181,25 @@ def like_post(post_id):
         )
     return redirect(url_for("index"))
 
+@app.route("/delete_post/<post_id>", methods=["POST"])
+def delete_post(post_id):
+    username = get_current_user()
+    if not username:
+        flash("You need to be logged in to delete a post!", "error")
+        return redirect(url_for("login"))
+    
+    post = db.posts_collection.find_one({"_id": ObjectId(post_id)})
+    if not post:
+        flash("Post not found.", "error")
+        return redirect(url_for("index"))
+    
+    if post["username"] != username:
+        flash("You can only delete your own posts!", "error")
+        return redirect(url_for("index"))
+    
+    db.posts_collection.delete_one({"_id": ObjectId(post_id)})
+    flash("Post deleted successfully!", "success")
+    return redirect(url_for("index"))
 
 @app.errorhandler(404)
 def page_not_found(e):
