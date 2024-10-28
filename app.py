@@ -1,8 +1,15 @@
-from auth import extract_credential, validate_password
 import bcrypt
+import hashlib
+import secrets
+import time
+import uuid
+import db
+
 from bson import ObjectId
 from datetime import datetime, timedelta
-import db
+from flask_wtf.csrf import CSRFProtect
+from auth import extract_credential, validate_password
+
 from flask import (
     Flask,
     request,
@@ -13,11 +20,7 @@ from flask import (
     url_for,
     flash,
 )
-import hashlib
-import secrets
-import time
-import uuid
-from flask_wtf.csrf import CSRFProtect
+
 
 
 app = Flask(__name__)
