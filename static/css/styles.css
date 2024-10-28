@@ -129,6 +129,7 @@ header nav ul li a:hover {
 .post {
   border-bottom: 1px solid var(--border-color);
   padding: 15px 0;
+  position: relative;
 }
 
 .post-header {
@@ -306,15 +307,18 @@ header nav ul li a:hover {
 
 .delete-button {
   background-color: transparent;
-  border: none;
-  color: rgb(0, 255, 85);
+  color: rgb(26, 140, 216);
   cursor: pointer;
-  margin-left: 10px;
   font-size: 16px;
+  border: none;
+  padding: 5px 10px; 
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
 }
 
 .delete-button:hover {
-  text-decoration: underline;
+  color: rgb(246, 188, 0);
 }
 
 .post-actions .likes {

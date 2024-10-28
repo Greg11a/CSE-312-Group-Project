@@ -46,7 +46,9 @@
                     {% if username == post.username %}
                     <form action="{{ url_for('delete_post', post_id=post._id) }}" method="POST" class="delete-form">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="delete-button">Delete</button>
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post?')">
+                            <span class="material-icons">delete</span>
+                        </button>
                     </form>
                     {% endif %}
                 </div>
