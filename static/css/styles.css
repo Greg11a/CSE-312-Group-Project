@@ -329,3 +329,24 @@ header nav ul li a:hover {
 .Welcome{
   position: relative;
 }
+
+
+
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input input {
+  padding-right: 30px; 
+}
+
+.visibility-password{
+  background: transparent;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  border: none;
+  color: rgb(26, 140, 216);
+}
