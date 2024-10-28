@@ -25,22 +25,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
-    const passwordInput = document.getElementById("password");
-    const visiblePassword = document.querySelector(".visibility-password");
-    const icon = visiblePassword.querySelector(".material-icons");
+    const visiblePassword = document.querySelectorAll(".visibility-password");
 
-    visiblePassword.addEventListener("click", function () {
-        const isPasswordVisible = passwordInput.getAttribute("type") === "text";
-        if (isPasswordVisible) {
-            passwordInput.setAttribute("type", "password");
-            icon.textContent = "visibility_off";
-        } else {
-            passwordInput.setAttribute("type", "text");
-            icon.textContent = "visibility";
-        }
-        
+    visiblePassword.forEach(button => {
+        const passwordInput = button.previousElementSibling; 
+        const icon = button.querySelector(".material-icons");
+        button.addEventListener("click", () => {
+            const isPasswordVisible = passwordInput.getAttribute("type") === "text";
+            if (isPasswordVisible) {
+                passwordInput.setAttribute("type", "password");
+                icon.textContent = "visibility_off";
+            } else {
+                passwordInput.setAttribute("type", "text");
+                icon.textContent = "visibility";
+            }
+        });
     });
 });
