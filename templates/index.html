@@ -10,8 +10,12 @@
             <form action="{{ url_for('create_post') }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <textarea name="post_content"
-                    placeholder="Welcome aboard {{username}}! What do you want to share today?" rows="3"></textarea>
+                    placeholder="Welcome aboard! {{username}}, What do you want to share today?" rows="3"></textarea>
                 <button type="submit">Post</button>
+            </form>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input id="file" type="file" required>
+                <button class="submit-btn" type="submit">Upload</button>
             </form>
             {% else %}
             <div class="welcome-message">
