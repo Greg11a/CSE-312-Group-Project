@@ -4,11 +4,13 @@ import secrets
 import time
 import uuid
 import db
+import os
 
 from bson import ObjectId
 from datetime import datetime, timedelta
 from flask_wtf.csrf import CSRFProtect
 from auth import extract_credential, validate_password
+from werkzeug.utils import secure_filename
 
 from flask import (
     Flask,
@@ -19,6 +21,7 @@ from flask import (
     redirect,
     url_for,
     flash,
+    jsonify,
 )
 
 
@@ -27,6 +30,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.jinja_env.autoescape = True
 csrf = CSRFProtect(app)
+
 
 # --------------------------Helper Functions---------------------------
 def get_current_user():
@@ -145,26 +149,72 @@ def register():
     return render_template("register.html")
 
 
+# @app.route("/create_post", methods=["POST"])
+# def create_post():
+#     username = get_current_user()
+#     if not username:
+#         flash("You need to be logged in to post!", "error")
+#         return redirect(url_for("login"))
+#     post_content = request.form.get("post_content")
+#     if not post_content.strip():
+#         flash("Post content cannot be empty!", "error")
+#         return redirect(url_for("index"))
+#     post_data = {
+#         "username": username,
+#         "content": post_content,
+#         "timestamp": time.time(),
+#         "likes": [],
+#     }
+#     db.posts_collection.insert_one(post_data)
+#     flash("Post created successfully!", "success")
+#     return redirect(url_for("index"))
+
 @app.route("/create_post", methods=["POST"])
 def create_post():
+    MAX_VIDEO_SIZE_MB = 50
+    MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024
+
     username = get_current_user()
     if not username:
         flash("You need to be logged in to post!", "error")
         return redirect(url_for("login"))
+
     post_content = request.form.get("post_content")
+    video_file = request.files.get("video")
+
     if not post_content.strip():
         flash("Post content cannot be empty!", "error")
         return redirect(url_for("index"))
+
+    video_path = None
+    if video_file:
+
+        video_file.seek(0, os.SEEK_END)
+        file_size = video_file.tell()
+        video_file.seek(0)
+
+        if file_size > MAX_VIDEO_SIZE_BYTES:
+            flash(f"File size exceeds {MAX_VIDEO_SIZE_MB}MB limit.", "error")
+            return redirect(url_for("index"))
+
+        if video_file.filename.split('.')[-1].lower() in ['mp4', 'mov', 'avi', 'mkv']:
+            filename = secure_filename(video_file.filename)
+            video_path = os.path.join("static/uploads/videos", filename)
+            video_file.save(video_path)
+        else:
+            flash("Invalid file type. Please upload a video file.", "error")
+            return redirect(url_for("index"))
+
     post_data = {
         "username": username,
         "content": post_content,
         "timestamp": time.time(),
         "likes": [],
+        "video_path": video_path
     }
     db.posts_collection.insert_one(post_data)
     flash("Post created successfully!", "success")
     return redirect(url_for("index"))
-
 
 @app.route("/like/<post_id>", methods=["POST"])
 def like_post(post_id):

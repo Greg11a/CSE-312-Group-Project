@@ -350,3 +350,11 @@ header nav ul li a:hover {
   border: none;
   color: rgb(26, 140, 216);
 }
+
+.video{
+  margin: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  display: block;
+}
