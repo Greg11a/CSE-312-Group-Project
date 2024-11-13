@@ -18,9 +18,16 @@
                     <textarea name="post_content" placeholder="Welcome aboard! {{username}}, What do you want to share today?" required></textarea>
                 
                     <!-- New file input for video upload -->
-                    <label for="video">Upload Video:</label>
-                    <input type="file" name="video" accept="video/*">
-                
+                    <div class="upload-section">
+                        <label for="video">Upload Video:</label>
+                        <input type="file" name="video" accept="video/*">
+                    </div>
+
+                    <div class="upload-section">
+                        <label for="image">Upload Image/GIF:</label>
+                        <input type="file" name="image" accept="image/*">
+                    </div>
+                    
                     <button type="submit">Create Post</button>
                 </form>
 
@@ -38,11 +45,17 @@
                     <span>{{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>
+                
                 {% if post.video_path %}
                 <video width="320" height="240" class="video" controls>
                     <source src="{{ url_for('static', filename=post.video_path.split('static/')[-1]) }}" type="video/mp4">
                 </video>
                 {% endif %}
+
+                {% if post.image_path %}
+                    <img width="320" height="240" class="image" src="{{ url_for('static', filename=post.image_path.split('static/')[-1]) }}" alt="Uploaded Image">
+                {% endif %}
+
                 <div class="post-actions">
                     <div class="likes">
                         <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">

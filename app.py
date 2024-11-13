@@ -169,10 +169,16 @@ def register():
 #     flash("Post created successfully!", "success")
 #     return redirect(url_for("index"))
 
+def ensure_directory_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        
 @app.route("/create_post", methods=["POST"])
 def create_post():
     MAX_VIDEO_SIZE_MB = 50
     MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024
+    MAX_IMAGE_SIZE_MB = 10  
+    MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024
 
     username = get_current_user()
     if not username:
@@ -181,12 +187,21 @@ def create_post():
 
     post_content = request.form.get("post_content")
     video_file = request.files.get("video")
+    image_file = request.files.get("image")
 
     if not post_content.strip():
         flash("Post content cannot be empty!", "error")
         return redirect(url_for("index"))
 
     video_path = None
+    image_path = None
+
+    video_directory = "static/uploads/videos"
+    image_directory = "static/uploads/images"
+
+    ensure_directory_exists(video_directory)
+    ensure_directory_exists(image_directory)
+
     if video_file:
 
         video_file.seek(0, os.SEEK_END)
@@ -204,14 +219,36 @@ def create_post():
         else:
             flash("Invalid file type. Please upload a video file.", "error")
             return redirect(url_for("index"))
+        
+    if image_file:
+
+        image_file.seek(0, os.SEEK_END)
+        file_size = image_file.tell()
+        image_file.seek(0)
+
+        if file_size > MAX_IMAGE_SIZE_BYTES:
+            flash(f"File size exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
+            return redirect(url_for("index"))
+
+        if image_file.filename.split('.')[-1].lower() in ['jpg', 'jpeg', 'png', 'gif']:
+            filename = secure_filename(image_file.filename)
+            image_path = os.path.join("static/uploads/images", filename)
+            image_file.save(image_path)
+
+        else:
+            flash("Invalid file type. Please upload a image file.", "error")
+            return redirect(url_for("index"))
+        
 
     post_data = {
         "username": username,
         "content": post_content,
         "timestamp": time.time(),
         "likes": [],
-        "video_path": video_path
+        "video_path": video_path,
+        "image_path": image_path 
     }
+
     db.posts_collection.insert_one(post_data)
     flash("Post created successfully!", "success")
     return redirect(url_for("index"))
