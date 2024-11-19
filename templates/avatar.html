@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Avatar{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Upload Avatar</h1>
+
+    <div>
+        <img src="{{ current_avatar }}" alt="Current Avatar" style="width: 200px; height: 200px; border-radius: 50%;">
+    </div>
+
+    <form action="{{ url_for('upload_avatar') }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- CSRF token -->
+        <label for="avatar">Choose an avatar:</label>
+        <input type="file" name="avatar" id="avatar" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</div>
+{% endblock %}

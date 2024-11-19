@@ -31,3 +31,7 @@ def store_auth_token(username, token, time):
 
 def delete_auth_token(hashed_auth_token):
     tokens_collection.delete_one({"hashed_auth_token": hashed_auth_token})
+
+
+def update_user_avatar(username, avatar_path):
+    users_collection.update_one({"username": username}, {"$set": {"avatar": avatar_path}})
