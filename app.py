@@ -52,8 +52,20 @@ def get_current_user():
 def index():
     username = get_current_user()
     posts = db.posts_collection.find().sort("timestamp", -1)
+
+    posts_with_avatars = []
+    for post in posts:
+        user = db.get_user_by_username(post["username"])
+        avatar_path = (
+            url_for("static", filename=user["avatar"])
+            if user and "avatar" in user
+            else url_for("static", filename="images/default_avatar.png")
+        )
+        post["avatar_path"] = avatar_path
+        posts_with_avatars.append(post)
+
     response = make_response(
-        render_template("index.html", username=username, posts=posts)
+        render_template("index.html", username=username, posts=posts_with_avatars)
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
@@ -313,6 +325,54 @@ def serve_js(filename):
 def serve_image(filename):
     response = send_from_directory("static/images", filename)
     return response, 200, {"Content-Type": "image/jpeg"}
+
+# image upload
+# Add avatar upload directory path
+AVATAR_UPLOAD_FOLDER = "static/uploads/avatars"
+if not os.path.exists(AVATAR_UPLOAD_FOLDER):
+    os.makedirs(AVATAR_UPLOAD_FOLDER)
+
+MAX_IMAGE_SIZE_MB = 2
+MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024
+
+@app.route("/avatar", methods=["GET", "POST"])
+def upload_avatar():
+    username = get_current_user()
+    if not username:
+        flash("You need to be logged in to upload an avatar!", "error")
+        return redirect(url_for("login"))
+    
+    user = db.get_user_by_username(username)
+    avatar_path = user.get("avatar", "images/default_avatar.png")
+    current_avatar = url_for('static', filename=avatar_path)
+
+    if request.method == "POST":
+        avatar_file = request.files.get("avatar")
+        if avatar_file:
+            # check file extension
+            allowed_extensions = {"jpg", "jpeg", "png", "gif"}
+            if avatar_file.filename.split('.')[-1].lower() not in allowed_extensions:
+                flash("Invalid file type. Please upload an image file (jpg, jpeg, png, gif).", "error")
+                return redirect(url_for("avatar"))
+            
+            avatar_file.seek(0, os.SEEK_END)
+            file_size = avatar_file.tell()
+            avatar_file.seek(0)
+
+            if file_size > MAX_IMAGE_SIZE_BYTES:
+                flash(f"File size exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
+                return redirect(url_for("avatar"))
+            
+            filename = secure_filename(f"{username}_avatar.{avatar_file.filename.split('.')[-1].lower()}")
+            avatar_path = os.path.join(AVATAR_UPLOAD_FOLDER, filename)
+            avatar_file.save(avatar_path)
+
+            relative_avatar_path = f"uploads/avatars/{filename}"
+            db.update_user_avatar(username, relative_avatar_path)
+            flash("Avatar uploaded successfully!", "success")
+            return redirect(url_for("index"))
+        
+    return render_template("avatar.html", current_avatar=current_avatar)
 
 
 # ---------------------------Test Route---------------------------
