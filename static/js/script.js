@@ -2,16 +2,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     const likeButtons = document.querySelectorAll('.like-button');
 
-    likeButtons.forEach(button => {
+    // likeButtons.forEach(button => {
+    //     button.addEventListener('click', () => {
+    //         const isLiked = button.getAttribute('liked') === 'true';
+    //         button.setAttribute('liked', !isLiked);
+    //         const icon = button.querySelector('.material-icons');
+    //         if (isLiked) {
+    //             icon.textContent = 'thumb_up_off_alt';
+    //         } else {
+    //             icon.textContent = 'thumb_up';
+    //         }
+    //     });
+    // });
+    document.querySelectorAll('.like-button').forEach(button => {
         button.addEventListener('click', () => {
+            const postId = button.getAttribute('data-id');
             const isLiked = button.getAttribute('liked') === 'true';
-            button.setAttribute('liked', !isLiked);
-            const icon = button.querySelector('.material-icons');
-            if (isLiked) {
-                icon.textContent = 'thumb_up_off_alt';
-            } else {
-                icon.textContent = 'thumb_up';
-            }
+            fetch(`/like/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                credentials: 'include',
+            }).then(response => response.json()).then(data => {
+            });
         });
     });
 });

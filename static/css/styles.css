@@ -424,3 +424,23 @@ header nav ul li a:hover {
 .countdown-timer {
   color: rgb(29, 155, 240);
 }
+.schedule-post {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.schedule-post h4 {
+  margin-bottom: 5px;
+}
+.schedule-post label {
+  margin-right: 5px;
+}
+.schedule-post select {
+  margin-right: 10px;
+}
+.countdown {
+  margin-top: 10px;
+  font-weight: bold;
+}
+.countdown-timer {
+  color: rgb(29, 155, 240);
+}
