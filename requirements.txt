@@ -3,3 +3,5 @@ flask
 pymongo
 flask_wtf
 werkzeug
+flask-socketio
+gevent

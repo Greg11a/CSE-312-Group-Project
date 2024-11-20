@@ -5,7 +5,12 @@ import time
 import uuid
 import db
 import os
+import json
 
+
+from gevent import monkey
+
+from flask_socketio import SocketIO, emit
 from bson import ObjectId
 from datetime import datetime, timedelta
 from flask_wtf.csrf import CSRFProtect 
@@ -29,8 +34,10 @@ from flask import (
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 app.jinja_env.autoescape = True
-csrf = CSRFProtect(app)
+monkey.patch_all()
 
+csrf = CSRFProtect(app)
+socketio = SocketIO(app)
 
 # --------------------------Helper Functions---------------------------
 def get_current_user():
@@ -184,7 +191,13 @@ def register():
 def ensure_directory_exists(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
-        
+
+def json_serializer(obj):
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    raise TypeError("Type not serializable")
+
+
 @app.route("/create_post", methods=["POST"])
 def create_post():
     MAX_VIDEO_SIZE_MB = 50
@@ -251,6 +264,12 @@ def create_post():
             flash("Invalid file type. Please upload a image file.", "error")
             return redirect(url_for("index"))
         
+    user = db.get_user_by_username(username)
+    avatar_path = (
+        url_for("static", filename=user["avatar"])
+        if user and "avatar" in user
+        else url_for("static", filename="images/default_avatar.png")
+    )
 
     post_data = {
         "username": username,
@@ -258,12 +277,24 @@ def create_post():
         "timestamp": time.time(),
         "likes": [],
         "video_path": video_path,
-        "image_path": image_path 
+        "image_path": image_path,
+        "avatar_path": avatar_path
     }
-
-    db.posts_collection.insert_one(post_data)
+    result = db.posts_collection.insert_one(post_data)
+    post_data["_id"] = result.inserted_id
+    post_data_serialized = json.loads(json.dumps(post_data, default=json_serializer))
+    socketio.emit('new_post', post_data_serialized)
     flash("Post created successfully!", "success")
     return redirect(url_for("index"))
+
+@socketio.on('connect')
+def handle_connect():
+    print("Client connected")
+    emit('message', {'data': 'Connected to the WebSocket server!'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected")
 
 @app.route("/like/<post_id>", methods=["POST"])
 def like_post(post_id):
@@ -283,24 +314,21 @@ def like_post(post_id):
         )
     return redirect(url_for("index"))
 
-@app.route("/delete_post/<post_id>", methods=["POST"])
+@app.route('/delete_post/<post_id>', methods=['POST'])
 def delete_post(post_id):
     username = get_current_user()
     if not username:
-        flash("You need to be logged in to delete a post!", "error")
+        flash("You need to be logged in to delete posts!", "error")
         return redirect(url_for("login"))
-    
-    post = db.posts_collection.find_one({"_id": ObjectId(post_id)})
-    if not post:
-        flash("Post not found.", "error")
-        return redirect(url_for("index"))
-    
-    if post["username"] != username:
-        flash("You can only delete your own posts!", "error")
-        return redirect(url_for("index"))
-    
-    db.posts_collection.delete_one({"_id": ObjectId(post_id)})
-    flash("Post deleted successfully!", "success")
+
+    result = db.posts_collection.delete_one({'_id': ObjectId(post_id)})
+
+    if result.deleted_count > 0:
+        socketio.emit('delete_post', {'post_id': post_id})
+        flash("Post deleted successfully!", "success")
+    else:
+        flash("Failed to delete post!", "error")
+
     return redirect(url_for("index"))
 
 @app.errorhandler(404)
@@ -353,7 +381,7 @@ def upload_avatar():
             allowed_extensions = {"jpg", "jpeg", "png", "gif"}
             if avatar_file.filename.split('.')[-1].lower() not in allowed_extensions:
                 flash("Invalid file type. Please upload an image file (jpg, jpeg, png, gif).", "error")
-                return redirect(url_for("avatar"))
+                return redirect(url_for("upload_avatar"))
             
             avatar_file.seek(0, os.SEEK_END)
             file_size = avatar_file.tell()
@@ -391,5 +419,6 @@ def secure_header(response):
 # ---------------------------Other Implementations---------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
+    # app.run(debug=True, host="0.0.0.0", port=8080)
+    socketio.run(app, debug=True, host="0.0.0.0", port=8080)
     # debug=True allow you to see modification immediately

@@ -37,9 +37,9 @@
             </div>
             {% endif %}
         </div>
-        <div class="post-feed">
+        <div class="post-feed" id="posts">
             {% for post in posts %}
-            <div class="post">
+            <div class="post" data-id="{{ post._id }}">
                 <div class="post-header">
                     <img src="{{ post.avatar_path }}" alt="Avatar" class="avatar">
                     <h3>{{ post.username }}</h3>
@@ -121,6 +121,81 @@
                 </button>
             </div>
         </div>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+        <script>
+            const socket = io();
+            const currentUsername = "{{ username }}";
+            const csrfToken = "{{ csrf_token() }}";
+            socket.on('new_post', (data) => {
+                console.log('New post received:', data);
+                const postsContainer = document.getElementById('posts');
+                const newPost = document.createElement('div');
+                newPost.classList.add('post');
+                newPost.setAttribute('data-id', data._id);
+                newPost.innerHTML = `
+                    <div class="post-header">
+                        <img src="${data.avatar_path}" alt="Avatar" class="avatar">
+                        <h3>${data.username}</h3>
+                        <span>${formatTimestamp(data.timestamp)}</span>
+                    </div>
+                    <p>${data.content}</p>
+                    ${data.video_path ? `<video width="320" height="240" class="video" controls>
+                        <source src="${data.video_path}" type="video/mp4">
+                    </video>` : ''}
+                    ${data.image_path ? `<img width="320" height="240" class="image" src="${data.image_path}" alt="Uploaded Image">` : ''}
+                    <div class="post-actions">
+                        <div class="likes">
+                            <form action="/like/${data._id}" method="POST">
+                                <input type="hidden" name="csrf_token" value="${data.csrf_token}">
+                                <button type="submit" class="like-button" liked="false">
+                                    <span class="material-icons">thumb_up_off_alt</span>
+                                </button>
+                            </form>
+                            <span class="like-count">0</span>
+                        </div>
+                        ${data.username === currentUsername ? `<form action="/delete_post/${data._id}" method="POST" class="delete-form">
+                            <input type="hidden" name="csrf_token" value="${data.csrf_token}">
+                            <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post?')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </form>` : ''}
+                    </div>
+                `;
+                postsContainer.prepend(newPost);
+            });
+
+            function formatTimestamp(timestamp) {
+                const now = new Date();
+                const postTime = new Date(timestamp * 1000);
+                const diff = now - postTime;
+                const minute = 60 * 1000;
+                const hour = 60 * minute;
+                const day = 24 * hour;
+
+                if (diff < minute) {
+                    return 'Just now';
+                } else if (diff < hour) {
+                    const minutes = Math.floor(diff / minute);
+                    return `${minutes}m`;
+                } else if (diff < day) {
+                    const hours = Math.floor(diff / hour);
+                    return `${hours}h`;
+                } else if (diff < 7 * day) {
+                    const days = Math.floor(diff / day);
+                    return `${days}d`;
+                } else {
+                    return postTime.toLocaleDateString();
+                }
+            }
+
+            socket.on('delete_post', (data) => {
+                console.log('Post deleted:', data);
+                const postElement = document.querySelector(`[data-id="${data.post_id}"]`);
+                if (postElement) {
+                    postElement.remove();
+                }
+            });
+        </script>
     </main>
 </div>
 {% endblock %}
