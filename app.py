@@ -8,7 +8,7 @@ import os
 
 from bson import ObjectId
 from datetime import datetime, timedelta
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect 
 from auth import extract_credential, validate_password
 from werkzeug.utils import secure_filename
 
