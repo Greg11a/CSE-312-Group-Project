@@ -3,6 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<body data-server-time="{{ server_time }}">
 <div class="container">
     <main class="main-content">
         <div class="post-input">
@@ -22,7 +23,27 @@
                     <label for="image">Upload Image/GIF:</label>
                     <input type="file" name="image" accept="image/*">
                 </div>
-                
+                <div class="schedule-post">
+                    <h4>Schedule Post</h4>
+                    <label for="scheduled_days">Days:</label>
+                    <select name="scheduled_days" id="scheduled_days">
+                        {% for day in range(0, 7) %}
+                        <option value="{{ day }}">{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="scheduled_hours">Hours:</label>
+                    <select name="scheduled_hours" id="scheduled_hours">
+                        {% for hour in range(0, 24) %}
+                        <option value="{{ hour }}">{{ hour }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="scheduled_minutes">Minutes:</label>
+                    <select name="scheduled_minutes" id="scheduled_minutes">
+                        {% for minute in range(0, 60) %}
+                        <option value="{{ minute }}">{{ minute }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <button type="submit">Create Post</button>
             </form>
             {% else %}
@@ -34,7 +55,7 @@
 
         <div class="post-feed" id="posts">
             {% for post in posts %}
-            <div class="post" data-id="{{ post._id }}">
+            <div class="post" data-id="{{ post._id }}" data-timestamp="{{ post.timestamp }}" data-is-published="{{ post.is_published }}">
                 <div class="post-header">
                     <img src="{{ post.avatar_path }}" alt="Avatar" class="avatar">
                     <h3>{{ post.username }}</h3>
@@ -51,12 +72,16 @@
                 {% if post.image_path %}
                 <img width="320" height="240" class="image" src="{{ url_for('static', filename=post.image_path.split('static/')[-1]) }}" alt="Uploaded Image">
                 {% endif %}
-
+                {% if not post.is_published %}
+                <div class="countdown">
+                    Scheduled to post in: <span class="countdown-timer" id="countdown-{{ post._id }}"></span>
+                </div>
+                {% endif %}
                 <div class="post-actions">
                     <div class="likes">
                         <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <button type="submit" class="like-button" liked="false">
+                            <button type="button" class="like-button" data-id="{{ post._id }}" liked="{{ 'true' if username in post.likes else 'false' }}">
                                 <span class="material-icons">
                                     {% if username in post.likes %}
                                     thumb_up
@@ -65,8 +90,8 @@
                                     {% endif %}
                                 </span>
                             </button>
+                            <span class="like-count">{{ post.likes | length }}</span>
                         </form>
-                        <span class="like-count">{{ post.likes | length }}</span>
                     </div>
                     {% if username == post.username %}
                     <form action="{{ url_for('delete_post', post_id=post._id) }}" method="POST" class="delete-form">
@@ -79,10 +104,8 @@
                 </div>
             </div>
             {% endfor %}
-            <!-- If you have sample posts, you can include them here with unique data-id attributes -->
         </div>
 
-        <!-- Include Socket.IO client library -->
         <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
         <script>
@@ -90,7 +113,6 @@
             const currentUsername = "{{ username }}";
             const csrfToken = "{{ csrf_token() }}";
 
-            // Listen for new posts
             socket.on('new_post', (data) => {
                 console.log('New post received:', data);
                 const postsContainer = document.getElementById('posts');
@@ -129,7 +151,6 @@
                 postsContainer.prepend(newPost);
             });
 
-            // Listen for post deletions
             socket.on('delete_post', (data) => {
                 console.log('Post deleted:', data);
                 const postElement = document.querySelector(`[data-id="${data.post_id}"]`);
@@ -138,7 +159,6 @@
                 }
             });
 
-            // Helper function to format the timestamp
             function formatTimestamp(timestamp) {
                 const now = new Date();
                 const postTime = new Date(timestamp * 1000);
@@ -162,7 +182,33 @@
                     return postTime.toLocaleDateString();
                 }
             }
+
+            socket.on('like_update', (data) => {
+                const postElement = document.querySelector(`[data-id="${data.post_id}"]`);
+                if (postElement) {
+                    const likeButton = postElement.querySelector('.like-button');
+                    const likeCount = postElement.querySelector('.like-count');
+                    const icon = likeButton.querySelector('.material-icons');
+                    let count = parseInt(likeCount.textContent);
+
+                    if (data.action === 'liked') {
+                        count += 1;
+                        if (data.username === currentUsername) {
+                            likeButton.setAttribute('liked', 'true');
+                            icon.textContent = 'thumb_up';
+                        }
+                    } else {
+                        count -= 1;
+                        if (data.username === currentUsername) {
+                            likeButton.setAttribute('liked', 'false');
+                            icon.textContent = 'thumb_up_off_alt';
+                        }
+                    }
+                    likeCount.textContent = count;
+                }
+            });
         </script>
     </main>
 </div>
+</body>
 {% endblock %}
