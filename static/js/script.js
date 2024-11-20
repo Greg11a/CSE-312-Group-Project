@@ -43,3 +43,48 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+let serverTime = parseFloat(document.body.getAttribute('data-server-time')) * 1000; // Convert to milliseconds
+let clientTime = new Date().getTime();
+let timeOffset = serverTime - clientTime;
+
+function updateCountdowns() {
+    const posts = document.querySelectorAll('.post[data-is-published="False"]');
+    posts.forEach(post => {
+        const timestamp = parseFloat(post.getAttribute('data-timestamp')) * 1000; // Convert to milliseconds
+        const countdownElement = post.querySelector('.countdown-timer');
+        const now = new Date().getTime() + timeOffset;
+        const distance = timestamp - now;
+
+        if (distance > 0) {
+            // Calculate time components
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            countdownElement.innerHTML = "Posting...";
+            // Optionally, refresh the page or remove the countdown
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+    });
+}
+
+// Update countdowns every second
+setInterval(updateCountdowns, 1000);
+
+function syncServerTime() {
+    fetch('/get_server_time')
+        .then(response => response.json())
+        .then(data => {
+            serverTime = data.server_time * 1000;
+            clientTime = new Date().getTime();
+            timeOffset = serverTime - clientTime;
+        });
+}
+
+// Sync server time every 10 seconds
+setInterval(syncServerTime, 10000);

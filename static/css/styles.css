@@ -197,7 +197,14 @@ header nav ul li a:hover {
   padding-top: 100px;
 }
 
-.login-container {
+.login-page{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px; /* Adjust as needed */
+}
+
+/* .login-container {
   border: solid;
   box-shadow: 12px 12px 2px 1px rgb(29, 155, 240);
   display: block;
@@ -214,6 +221,17 @@ header nav ul li a:hover {
   padding-top: 50px;
   position: relative;
   top: 100px;
+} */
+
+.login-container {
+  border: solid;
+  box-shadow: 12px 12px 2px 1px rgb(29, 155, 240);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 400px;
+  padding: 30px 30px 70px 30px;
+  margin: 0;
 }
 
 .login-container h2 {
@@ -260,9 +278,16 @@ header nav ul li a:hover {
 }
 
 .todo-image{
-  position: fixed;
+  /* position: fixed;
   top: 180px;
-  left: 230px;
+  left: 230px; */
+  margin-right: 20px;
+  max-width: 50%;
+}
+
+.todo-image img{
+  width: 100%;
+  height: auto;
 }
 
 .dropbtn {
@@ -372,4 +397,30 @@ header nav ul li a:hover {
   padding: 10px;
   display: block;
   object-fit: contain; 
+}
+
+.schedule-post {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.schedule-post h4 {
+  margin-bottom: 5px;
+}
+
+.schedule-post label {
+  margin-right: 5px;
+}
+
+.schedule-post select {
+  margin-right: 10px;
+}
+
+.countdown {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.countdown-timer {
+  color: rgb(29, 155, 240);
 }

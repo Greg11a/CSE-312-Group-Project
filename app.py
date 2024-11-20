@@ -5,12 +5,7 @@ import time
 import uuid
 import db
 import os
-import json
 
-
-from gevent import monkey
-
-from flask_socketio import SocketIO, emit
 from bson import ObjectId
 from datetime import datetime, timedelta
 from flask_wtf.csrf import CSRFProtect 
@@ -51,14 +46,41 @@ def get_current_user():
         return auth_token["username"]
     return None
 
+def publish_scheduled_posts():
+    while True:
+        current_time = time.time()
+        posts_to_publish = db.posts_collection.find({
+            "is_published": False,
+            "timestamp": {"$lte": current_time}
+        })
+        for post in posts_to_publish:
+            db.posts_collection.update_one(
+                {"_id": post["_id"]},
+                {"$set": {"is_published": True}}
+            )
+        time.sleep(1)  # Check every second
+
+# Start the background thread
+threading.Thread(target=publish_scheduled_posts, daemon=True).start()
 
 # ---------------------------------------------------------------------
 
+@app.route("/get_server_time")
+def get_server_time():
+    return jsonify({"server_time": time.time()})
 
 @app.route("/")  # root route
 def index():
     username = get_current_user()
-    posts = db.posts_collection.find().sort("timestamp", -1)
+    if username:
+        posts = db.posts_collection.find({
+            "$or": [
+                {"is_published": True},
+                {"username": username}
+            ]
+        }).sort("timestamp", -1)
+    else:
+        posts = db.posts_collection.find({"is_published": True}).sort("timestamp", -1)
 
     posts_with_avatars = []
     for post in posts:
@@ -71,8 +93,9 @@ def index():
         post["avatar_path"] = avatar_path
         posts_with_avatars.append(post)
 
+    server_time = time.time()
     response = make_response(
-        render_template("index.html", username=username, posts=posts_with_avatars)
+        render_template("index.html", username=username, posts=posts_with_avatars, server_time=server_time)
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
@@ -217,6 +240,19 @@ def create_post():
     if not post_content.strip():
         flash("Post content cannot be empty!", "error")
         return redirect(url_for("index"))
+    
+    scheduled_days = int(request.form.get("scheduled_days", 0))
+    scheduled_hours = int(request.form.get("scheduled_hours", 0))
+    scheduled_minutes = int(request.form.get("scheduled_minutes", 0))
+
+    if scheduled_days > 6 or scheduled_days < 0 or scheduled_hours < 0 or scheduled_hours > 23 or scheduled_minutes < 0 or scheduled_minutes > 59:
+        flash("Invalid scheduled time.", "error")
+        return redirect(url_for("index"))
+    
+    current_time = datetime.now()
+    scheduled_time = current_time + timedelta(days=scheduled_days, hours=scheduled_hours, minutes=scheduled_minutes)
+    scheduled_timestamp = scheduled_time.timestamp()
+
 
     video_path = None
     image_path = None
@@ -274,11 +310,11 @@ def create_post():
     post_data = {
         "username": username,
         "content": post_content,
-        "timestamp": time.time(),
+        "timestamp": scheduled_timestamp,
+        "post_created" : time.time(),
         "likes": [],
         "video_path": video_path,
-        "image_path": image_path,
-        "avatar_path": avatar_path
+        "image_path": image_path 
     }
     result = db.posts_collection.insert_one(post_data)
     post_data["_id"] = result.inserted_id

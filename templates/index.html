@@ -3,6 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<body data-server-time="{{ server_time }}">
 <div class="container">
     <main class="main-content">
         <div class="post-input">
@@ -27,7 +28,29 @@
                         <label for="image">Upload Image/GIF:</label>
                         <input type="file" name="image" accept="image/*">
                     </div>
-                    
+
+                    <div class="schedule-post">
+                        <h4>Schedule Post</h4>
+                        <label for="scheduled_days">Days:</label>
+                        <select name="scheduled_days" id="scheduled_days">
+                            {% for day in range(0, 7) %}
+                            <option value="{{ day }}">{{ day }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="scheduled_hours">Hours:</label>
+                        <select name="scheduled_hours" id="scheduled_hours">
+                            {% for hour in range(0, 24) %}
+                            <option value="{{ hour }}">{{ hour }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="scheduled_minutes">Minutes:</label>
+                        <select name="scheduled_minutes" id="scheduled_minutes">
+                            {% for minute in range(0, 60) %}
+                            <option value="{{ minute }}">{{ minute }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
                     <button type="submit">Create Post</button>
                 </form>
 
@@ -39,7 +62,11 @@
         </div>
         <div class="post-feed" id="posts">
             {% for post in posts %}
+<<<<<<< HEAD
             <div class="post" data-id="{{ post._id }}">
+=======
+            <div class="post" data-post-id="{{ post._id }}" data-timestamp="{{ post.timestamp }}" data-is-published="{{ post.is_published }}">
+>>>>>>> 6634663dc36d44354f0031241cc9d034d4c710b5
                 <div class="post-header">
                     <img src="{{ post.avatar_path }}" alt="Avatar" class="avatar">
                     <h3>{{ post.username }}</h3>
@@ -55,6 +82,12 @@
 
                 {% if post.image_path %}
                     <img width="320" height="240" class="image" src="{{ url_for('static', filename=post.image_path.split('static/')[-1]) }}" alt="Uploaded Image">
+                {% endif %}
+
+                {% if not post.is_published %}
+                <div class="countdown">
+                    Scheduled to post in: <span class="countdown-timer" id="countdown-{{ post._id }}"></span>
+                </div>
                 {% endif %}
 
                 <div class="post-actions">
@@ -198,4 +231,5 @@
         </script>
     </main>
 </div>
+</body>
 {% endblock %}
