@@ -37,6 +37,7 @@ app.jinja_env.autoescape = True
 csrf = CSRFProtect(app)
 socketio = SocketIO(app)
 
+
 # --------------------------Helper Functions---------------------------
 def get_current_user():
     token = request.cookies.get("auth_token")
@@ -48,6 +49,7 @@ def get_current_user():
     if auth_token and auth_token["expire"] > time.time():
         return auth_token["username"]
     return None
+
 
 def format_timestamp(timestamp):
     now = datetime.now()
@@ -67,29 +69,34 @@ def format_timestamp(timestamp):
     else:
         return post_time.strftime("%b %d, %Y")
 
+
 app.jinja_env.filters["format_timestamp"] = format_timestamp
+
 
 def ensure_directory_exists(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
 
 def json_serializer(obj):
     if isinstance(obj, ObjectId):
         return str(obj)
     raise TypeError("Type not serializable")
 
+
 # ---------------------------------------------------------------------
+
 
 @app.route("/")
 def index():
     username = get_current_user()
+    current_avatar = url_for("static", filename="images/default_avatar.png")
+    if db.get_user_by_username(username) and "avatar" in db.get_user_by_username(username):
+        current_avatar = url_for("static", filename=db.get_user_by_username(username)["avatar"])
     if username:
-        posts = db.posts_collection.find({
-            "$or": [
-                {"is_published": True},
-                {"username": username}
-            ]
-        }).sort("timestamp", -1)
+        posts = db.posts_collection.find(
+            {"$or": [{"is_published": True}, {"username": username}]}
+        ).sort("timestamp", -1)
     else:
         posts = db.posts_collection.find({"is_published": True}).sort("timestamp", -1)
 
@@ -105,10 +112,17 @@ def index():
         posts_with_avatars.append(post)
     server_time = time.time()
     response = make_response(
-        render_template("index.html", username=username, posts=posts_with_avatars, server_time=server_time)
+        render_template(
+            "index.html",
+            username=username,
+            current_avatar=current_avatar,
+            posts=posts_with_avatars,
+            server_time=server_time,
+        )
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -137,6 +151,7 @@ def login():
             return render_template("login.html", message="Invalid username or password")
     return render_template("login.html")
 
+
 @app.route("/logout")
 def logout():
     auth_token = request.cookies.get("auth_token")
@@ -147,6 +162,7 @@ def logout():
     response.set_cookie("auth_token", "", max_age=0, httponly=True)
     flash("Logout Successfully!", "success")
     return response
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -175,24 +191,28 @@ def register():
             return render_template("register.html", message="Registration failed!")
     return render_template("register.html")
 
+
 def publish_scheduled_posts():
     while True:
         current_time = time.time()
-        posts_to_publish = db.posts_collection.find({
-            "is_published": False,
-            "timestamp": {"$lte": current_time}
-        })
+        posts_to_publish = db.posts_collection.find(
+            {"is_published": False, "timestamp": {"$lte": current_time}}
+        )
         for post in posts_to_publish:
             db.posts_collection.update_one(
-                {"_id": post["_id"]},
-                {"$set": {"is_published": True}}
+                {"_id": post["_id"]}, {"$set": {"is_published": True}}
             )
         time.sleep(1)  # Check every second
+
+
 # Start the background thread
 threading.Thread(target=publish_scheduled_posts, daemon=True).start()
+
+
 @app.route("/get_server_time")
 def get_server_time():
     return jsonify({"server_time": time.time()})
+
 
 @app.route("/create_post", methods=["POST"])
 def create_post():
@@ -216,12 +236,21 @@ def create_post():
     scheduled_days = int(request.form.get("scheduled_days", 0))
     scheduled_hours = int(request.form.get("scheduled_hours", 0))
     scheduled_minutes = int(request.form.get("scheduled_minutes", 0))
-    if scheduled_days > 6 or scheduled_days < 0 or scheduled_hours < 0 or scheduled_hours > 23 or scheduled_minutes < 0 or scheduled_minutes > 59:
+    if (
+        scheduled_days > 6
+        or scheduled_days < 0
+        or scheduled_hours < 0
+        or scheduled_hours > 23
+        or scheduled_minutes < 0
+        or scheduled_minutes > 59
+    ):
         flash("Invalid scheduled time.", "error")
         return redirect(url_for("index"))
-    
+
     current_time = datetime.now()
-    scheduled_time = current_time + timedelta(days=scheduled_days, hours=scheduled_hours, minutes=scheduled_minutes)
+    scheduled_time = current_time + timedelta(
+        days=scheduled_days, hours=scheduled_hours, minutes=scheduled_minutes
+    )
     scheduled_timestamp = scheduled_time.timestamp()
     video_path = None
     image_path = None
@@ -241,7 +270,7 @@ def create_post():
             flash(f"File size exceeds {MAX_VIDEO_SIZE_MB}MB limit.", "error")
             return redirect(url_for("index"))
 
-        if video_file.filename.split('.')[-1].lower() in ['mp4', 'mov', 'avi', 'mkv']:
+        if video_file.filename.split(".")[-1].lower() in ["mp4", "mov", "avi", "mkv"]:
             filename = secure_filename(video_file.filename)
             video_path = os.path.join("static/uploads/videos", filename)
             video_file.save(video_path)
@@ -258,7 +287,7 @@ def create_post():
             flash(f"File size exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
             return redirect(url_for("index"))
 
-        if image_file.filename.split('.')[-1].lower() in ['jpg', 'jpeg', 'png', 'gif']:
+        if image_file.filename.split(".")[-1].lower() in ["jpg", "jpeg", "png", "gif"]:
             filename = secure_filename(image_file.filename)
             image_path = os.path.join("static/uploads/images", filename)
             image_file.save(image_path)
@@ -278,7 +307,7 @@ def create_post():
         "username": username,
         "content": post_content,
         "timestamp": scheduled_timestamp,
-        "post_created" : time.time(),
+        "post_created": time.time(),
         "likes": [],
         "video_path": video_path,
         "image_path": image_path,
@@ -289,9 +318,10 @@ def create_post():
     post_data["_id"] = result.inserted_id
 
     post_data_serialized = json.loads(json.dumps(post_data, default=json_serializer))
-    socketio.emit('new_post', post_data_serialized)
+    socketio.emit("new_post", post_data_serialized)
     flash("Post created successfully!", "success")
     return redirect(url_for("index"))
+
 
 @app.route("/like/<post_id>", methods=["POST"])
 def like_post(post_id):
@@ -305,60 +335,70 @@ def like_post(post_id):
         db.posts_collection.update_one(
             {"_id": ObjectId(post_id)}, {"$pull": {"likes": username}}
         )
-        action = 'unliked'
+        action = "unliked"
     else:
         db.posts_collection.update_one(
             {"_id": ObjectId(post_id)}, {"$push": {"likes": username}}
         )
-        action = 'liked'
-    socketio.emit('like_update', {'post_id': str(post_id), 'action': action, 'username': username})
+        action = "liked"
+    socketio.emit(
+        "like_update", {"post_id": str(post_id), "action": action, "username": username}
+    )
     return jsonify(success=True)
 
-@app.route('/delete_post/<post_id>', methods=['POST'])
+
+@app.route("/delete_post/<post_id>", methods=["POST"])
 def delete_post(post_id):
     username = get_current_user()
     if not username:
         flash("You need to be logged in to delete posts!", "error")
         return redirect(url_for("login"))
 
-    result = db.posts_collection.delete_one({'_id': ObjectId(post_id)})
+    result = db.posts_collection.delete_one({"_id": ObjectId(post_id)})
 
     if result.deleted_count > 0:
-        socketio.emit('delete_post', {'post_id': str(post_id)})
+        socketio.emit("delete_post", {"post_id": str(post_id)})
         flash("Post deleted successfully!", "success")
     else:
         flash("Failed to delete post!", "error")
 
     return redirect(url_for("index"))
 
-@socketio.on('connect')
+
+@socketio.on("connect")
 def handle_connect():
     print("Client connected")
-    emit('message', {'data': 'Connected to the WebSocket server!'})
+    emit("message", {"data": "Connected to the WebSocket server!"})
 
-@socketio.on('disconnect')
+
+@socketio.on("disconnect")
 def handle_disconnect():
     print("Client disconnected")
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     response = make_response(render_template("404.html"), 404)
     return response
 
+
 @app.route("/static/css/<path:filename>")
 def serve_css(filename):
     response = send_from_directory("static/css", filename)
     return response, 200, {"Content-Type": "text/css; charset=utf-8"}
+
 
 @app.route("/static/js/<path:filename>")
 def serve_js(filename):
     response = send_from_directory("static/js", filename)
     return response, 200, {"Content-Type": "text/javascript; charset=utf-8"}
 
+
 @app.route("/static/images/<path:filename>")
 def serve_image(filename):
     response = send_from_directory("static/images", filename)
     return response, 200, {"Content-Type": "image/jpeg"}
+
 
 AVATAR_UPLOAD_FOLDER = "static/uploads/avatars"
 if not os.path.exists(AVATAR_UPLOAD_FOLDER):
@@ -366,6 +406,7 @@ if not os.path.exists(AVATAR_UPLOAD_FOLDER):
 
 MAX_AVATAR_SIZE_MB = 2
 MAX_AVATAR_SIZE_BYTES = MAX_AVATAR_SIZE_MB * 1024 * 1024
+
 
 @app.route("/avatar", methods=["GET", "POST"])
 def upload_avatar():
@@ -376,15 +417,18 @@ def upload_avatar():
 
     user = db.get_user_by_username(username)
     avatar_path = user.get("avatar", "images/default_avatar.png")
-    current_avatar = url_for('static', filename=avatar_path)
+    current_avatar = url_for("static", filename=avatar_path)
 
     if request.method == "POST":
         avatar_file = request.files.get("avatar")
         if avatar_file:
             # Check file extension
             allowed_extensions = {"jpg", "jpeg", "png", "gif"}
-            if avatar_file.filename.split('.')[-1].lower() not in allowed_extensions:
-                flash("Invalid file type. Please upload an image file (jpg, jpeg, png, gif).", "error")
+            if avatar_file.filename.split(".")[-1].lower() not in allowed_extensions:
+                flash(
+                    "Invalid file type. Please upload an image file (jpg, jpeg, png, gif).",
+                    "error",
+                )
                 return redirect(url_for("avatar"))
 
             avatar_file.seek(0, os.SEEK_END)
@@ -395,7 +439,9 @@ def upload_avatar():
                 flash(f"File size exceeds {MAX_AVATAR_SIZE_MB}MB limit.", "error")
                 return redirect(url_for("avatar"))
 
-            filename = secure_filename(f"{username}_avatar.{avatar_file.filename.split('.')[-1].lower()}")
+            filename = secure_filename(
+                f"{username}_avatar.{avatar_file.filename.split('.')[-1].lower()}"
+            )
             avatar_path = os.path.join(AVATAR_UPLOAD_FOLDER, filename)
             avatar_file.save(avatar_path)
 
@@ -406,16 +452,19 @@ def upload_avatar():
 
     return render_template("avatar.html", current_avatar=current_avatar)
 
+
 # ---------------------------Test Route---------------------------
 @app.route("/test")
 def hello_world():
     return "<h1>Hello!</h1>"
+
 
 # ---------------------------After Request---------------------------
 @app.after_request
 def secure_header(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
+
 
 # ---------------------------Run Application---------------------------
 if __name__ == "__main__":
