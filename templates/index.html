@@ -15,14 +15,13 @@
                 
                 <!-- New file input for video upload -->
                 <div class="upload-section">
-                    <label for="video">Upload Video:</label>
-                    <input type="file" name="video" accept="video/*">
+                    <label for="files">
+                        <span class="material-icons">cloud_upload</span>
+                        Upload Files:
+                    </label>
+                    <input type="file" name="files" accept="video/*,image/*" multiple>
                 </div>
-
-                <div class="upload-section">
-                    <label for="image">Upload Image/GIF:</label>
-                    <input type="file" name="image" accept="image/*">
-                </div>
+                
                 <div class="schedule-post">
                     <h4>Schedule Post</h4>
                     <label for="scheduled_days">Days:</label>

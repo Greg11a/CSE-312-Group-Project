@@ -227,8 +227,7 @@ def create_post():
         return redirect(url_for("login"))
 
     post_content = request.form.get("post_content")
-    video_file = request.files.get("video")
-    image_file = request.files.get("image")
+    upload_file = request.files.get("files")
 
     if not post_content.strip():
         flash("Post content cannot be empty!", "error")
@@ -261,38 +260,31 @@ def create_post():
     ensure_directory_exists(video_directory)
     ensure_directory_exists(image_directory)
 
-    if video_file:
-        video_file.seek(0, os.SEEK_END)
-        file_size = video_file.tell()
-        video_file.seek(0)
+    if upload_file:
+        upload_file.seek(0, os.SEEK_END)
+        file_size = upload_file.tell()
+        upload_file.seek(0)
 
-        if file_size > MAX_VIDEO_SIZE_BYTES:
-            flash(f"File size exceeds {MAX_VIDEO_SIZE_MB}MB limit.", "error")
-            return redirect(url_for("index"))
+        file_extension = upload_file.filename.split('.')[-1].lower()
 
-        if video_file.filename.split(".")[-1].lower() in ["mp4", "mov", "avi", "mkv"]:
-            filename = secure_filename(video_file.filename)
-            video_path = os.path.join("static/uploads/videos", filename)
-            video_file.save(video_path)
+        if file_extension in ['mp4', 'mov', 'avi', 'mkv']:
+            if file_size > MAX_VIDEO_SIZE_BYTES:
+                flash(f"Video file exceeds {MAX_VIDEO_SIZE_MB}MB limit.", "error")
+                return redirect(url_for("index"))
+            filename = secure_filename(upload_file.filename)
+            video_path = os.path.join(video_directory, filename)
+            upload_file.save(video_path)
+
+        elif file_extension in ['jpg', 'jpeg', 'png', 'gif']:
+            if file_size > MAX_IMAGE_SIZE_BYTES:
+                flash(f"Image file exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
+                return redirect(url_for("index"))
+            filename = secure_filename(upload_file.filename) 
+            image_path = os.path.join(image_directory, filename) 
+            upload_file.save(image_path)
+
         else:
-            flash("Invalid file type. Please upload a video file.", "error")
-            return redirect(url_for("index"))
-
-    if image_file:
-        image_file.seek(0, os.SEEK_END)
-        file_size = image_file.tell()
-        image_file.seek(0)
-
-        if file_size > MAX_IMAGE_SIZE_BYTES:
-            flash(f"File size exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
-            return redirect(url_for("index"))
-
-        if image_file.filename.split(".")[-1].lower() in ["jpg", "jpeg", "png", "gif"]:
-            filename = secure_filename(image_file.filename)
-            image_path = os.path.join("static/uploads/images", filename)
-            image_file.save(image_path)
-        else:
-            flash("Invalid file type. Please upload an image file.", "error")
+            flash("Invalid file type. Please upload an valid file format.", "error")
             return redirect(url_for("index"))
 
     # Retrieve the user data to get the avatar path

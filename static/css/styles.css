@@ -14,7 +14,7 @@
 }
 
 body {
-  background-color: #f2f3f5;
+  background: linear-gradient(100deg, white,  rgb(29, 155, 240));
   display: flex;
   justify-content: center;
 }
@@ -107,7 +107,7 @@ header nav ul li a:hover {
 
 .post-input button {
   align-self: flex-end;
-  background-color: var(--button-color);
+  background: linear-gradient(150deg, rgb(161, 205, 235), rgb(26, 140, 216));
   border: none;
   border-radius: 5px;
   color: white;
@@ -454,3 +454,37 @@ header nav ul li a:hover {
 .countdown-timer {
   color: rgb(29, 155, 240);
 }
+
+
+.upload-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-section .material-icons {
+  font-size: 25px; 
+  color: rgb(29, 155, 240);
+}
+
+.upload-section label {
+  font-size: 15px;
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.upload-section input[type="file"] {
+  display: inline-block;
+  border: 1px solid rgb(227, 225, 225);
+  border-radius: 5px; 
+  font-size: 13px;
+  padding: 8px 15px; 
+}
+
+.upload-section input[type="file"]:hover {
+  background-color: rgb(29, 155, 240);
+  color: white;
+}
+
