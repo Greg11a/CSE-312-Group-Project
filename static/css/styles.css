@@ -197,11 +197,12 @@ header nav ul li a:hover {
   padding-top: 100px;
 }
 
-.login-page{
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 100px; /* Adjust as needed */
+  margin-top: 100px;
+  /* Adjust as needed */
 }
 
 /* .login-container {
@@ -277,7 +278,7 @@ header nav ul li a:hover {
   color: rgb(29, 155, 240);
 }
 
-.todo-image{
+.todo-image {
   /* position: fixed;
   top: 180px;
   left: 230px; */
@@ -285,7 +286,7 @@ header nav ul li a:hover {
   max-width: 50%;
 }
 
-.todo-image img{
+.todo-image img {
   width: 100%;
   height: auto;
 }
@@ -309,7 +310,7 @@ header nav ul li a:hover {
   position: fixed;
   background-color: #f9f9f9;
   min-width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-content a {
@@ -319,7 +320,9 @@ header nav ul li a:hover {
   display: block;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {
+  background-color: #f1f1f1
+}
 
 .dropdown:hover .dropdown-content {
   display: block;
@@ -342,7 +345,7 @@ header nav ul li a:hover {
   cursor: pointer;
   font-size: 16px;
   border: none;
-  padding: 5px 10px; 
+  padding: 5px 10px;
   position: absolute;
   bottom: 12px;
   right: 12px;
@@ -357,7 +360,7 @@ header nav ul li a:hover {
   align-items: center;
 }
 
-.Welcome{
+.Welcome {
   position: relative;
 }
 
@@ -370,10 +373,10 @@ header nav ul li a:hover {
 }
 
 .password-input input {
-  padding-right: 30px; 
+  padding-right: 30px;
 }
 
-.visibility-password{
+.visibility-password {
   background: transparent;
   position: absolute;
   right: 10px;
@@ -382,7 +385,7 @@ header nav ul li a:hover {
   color: rgb(26, 140, 216);
 }
 
-.video{
+.video {
   margin: 10px;
   margin-left: auto;
   margin-right: auto;
@@ -396,7 +399,7 @@ header nav ul li a:hover {
   margin-right: auto;
   padding: 10px;
   display: block;
-  object-fit: contain; 
+  object-fit: contain;
 }
 
 .schedule-post {
@@ -424,23 +427,29 @@ header nav ul li a:hover {
 .countdown-timer {
   color: rgb(29, 155, 240);
 }
+
 .schedule-post {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
 .schedule-post h4 {
   margin-bottom: 5px;
 }
+
 .schedule-post label {
   margin-right: 5px;
 }
+
 .schedule-post select {
   margin-right: 10px;
 }
+
 .countdown {
   margin-top: 10px;
   font-weight: bold;
 }
+
 .countdown-timer {
   color: rgb(29, 155, 240);
 }

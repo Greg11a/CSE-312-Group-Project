@@ -21,16 +21,19 @@
         <nav>
             <ul>
                 {% if username %}
-                 <h1 style="font-size: 30px;" class="Welcome">Welcome!</h1>
+                <h1 style="font-size: 30px;" class="Welcome">Welcome!</h1>
                 <div class="dropdown">
-                    <button id="dropbtn" class="dropbtn" style="font-size: 25px; font-style: italic;">{{username}}</button>
+                    <button id="dropbtn" class="dropbtn"
+                        style="font-size: 25px; font-style: italic;">{{username}}</button>
                     <div id="dropdown-content" class="dropdown-content">
                         <a href="/avatar">Upload Avatar</a>
                         <a href="/logout">Logout</a>
                     </div>
-                  </div>
+                </div>
                 {% else %}
-                <li><a href="/login"><h1 style="color: black; font-size: 30px;" >Login</h1></a></li>
+                <li><a href="/login">
+                        <h1 style="color: black; font-size: 30px;">Login</h1>
+                    </a></li>
                 {% endif %}
             </ul>
         </nav>
