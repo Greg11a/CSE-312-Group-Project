@@ -449,7 +449,7 @@ def upload_avatar():
             flash("Avatar uploaded successfully!", "success")
             return redirect(url_for("index"))
 
-    return render_template("avatar.html", current_avatar=current_avatar)
+    return render_template("avatar.html", username=username, current_avatar=current_avatar)
 
 
 @app.route("/follow/<username>", methods=["POST"])
