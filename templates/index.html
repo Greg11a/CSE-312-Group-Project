@@ -58,6 +58,19 @@
                 <div class="post-header">
                     <img src="{{ post.avatar_path }}" alt="Avatar" class="avatar">
                     <h3>{{ post.username }}</h3>
+                    {% if username and username != post.username %}
+                    <form class="follow-form">
+                        <button 
+                            type="button" 
+                            class="follow-button" 
+                            data-username="{{ post.username }}" 
+                            {% if post.username in following_users %}
+                            data-following="true">Followed</button>
+                        {% else %}
+                            data-following="false">Follow</button>
+                        {% endif %}
+                    </form>
+                    {% endif %}
                     <span>{{ post.timestamp | format_timestamp }}</span>
                 </div>
                 <p>{{ post.content }}</p>

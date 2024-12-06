@@ -91,14 +91,20 @@ def json_serializer(obj):
 def index():
     username = get_current_user()
     current_avatar = url_for("static", filename="images/default_avatar.png")
-    if db.get_user_by_username(username) and "avatar" in db.get_user_by_username(username):
-        current_avatar = url_for("static", filename=db.get_user_by_username(username)["avatar"])
+    if db.get_user_by_username(username) and "avatar" in db.get_user_by_username(
+        username
+    ):
+        current_avatar = url_for(
+            "static", filename=db.get_user_by_username(username)["avatar"]
+        )
     if username:
         posts = db.posts_collection.find(
             {"$or": [{"is_published": True}, {"username": username}]}
         ).sort("timestamp", -1)
+        following_users = db.get_following(username)
     else:
         posts = db.posts_collection.find({"is_published": True}).sort("timestamp", -1)
+        following_users = []
 
     posts_with_avatars = []
     for post in posts:
@@ -118,6 +124,7 @@ def index():
             current_avatar=current_avatar,
             posts=posts_with_avatars,
             server_time=server_time,
+            following_users=following_users,
         )
     )
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -265,9 +272,9 @@ def create_post():
         file_size = upload_file.tell()
         upload_file.seek(0)
 
-        file_extension = upload_file.filename.split('.')[-1].lower()
+        file_extension = upload_file.filename.split(".")[-1].lower()
 
-        if file_extension in ['mp4', 'mov', 'avi', 'mkv']:
+        if file_extension in ["mp4", "mov", "avi", "mkv"]:
             if file_size > MAX_VIDEO_SIZE_BYTES:
                 flash(f"Video file exceeds {MAX_VIDEO_SIZE_MB}MB limit.", "error")
                 return redirect(url_for("index"))
@@ -275,12 +282,12 @@ def create_post():
             video_path = os.path.join(video_directory, filename)
             upload_file.save(video_path)
 
-        elif file_extension in ['jpg', 'jpeg', 'png', 'gif']:
+        elif file_extension in ["jpg", "jpeg", "png", "gif"]:
             if file_size > MAX_IMAGE_SIZE_BYTES:
                 flash(f"Image file exceeds {MAX_IMAGE_SIZE_MB}MB limit.", "error")
                 return redirect(url_for("index"))
-            filename = secure_filename(upload_file.filename) 
-            image_path = os.path.join(image_directory, filename) 
+            filename = secure_filename(upload_file.filename)
+            image_path = os.path.join(image_directory, filename)
             upload_file.save(image_path)
 
         else:
@@ -443,6 +450,48 @@ def upload_avatar():
             return redirect(url_for("index"))
 
     return render_template("avatar.html", current_avatar=current_avatar)
+
+
+@app.route("/follow/<username>", methods=["POST"])
+def follow(username):
+    current_user = get_current_user()
+    if not current_user or current_user == username:
+        return jsonify({"success": False}), 400
+
+    db.follow_user(current_user, username)
+    return jsonify({"success": True})
+
+
+@app.route("/unfollow/<username>", methods=["POST"])
+def unfollow(username):
+    current_user = get_current_user()
+    if not current_user or current_user == username:
+        return jsonify({"success": False}), 400
+
+    db.unfollow_user(current_user, username)
+    return jsonify({"success": True})
+
+
+@app.route("/following")
+def view_following():
+    current_user = get_current_user()
+    if not current_user:
+        flash("Please log in to view your following list.", "error")
+        return redirect(url_for("login"))
+
+    following = db.get_following(current_user)
+    return render_template("following.html", username=current_user, following=following)
+
+
+@app.route("/followers")
+def view_followers():
+    current_user = get_current_user()
+    if not current_user:
+        flash("Please log in to view your followers list.", "error")
+        return redirect(url_for("login"))
+
+    followers = db.get_followers(current_user)
+    return render_template("followers.html", username=current_user, followers=followers)
 
 
 # ---------------------------Test Route---------------------------

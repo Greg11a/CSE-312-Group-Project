@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const visiblePassword = document.querySelectorAll(".visibility-password");
 
     visiblePassword.forEach(button => {
-        const passwordInput = button.previousElementSibling; 
+        const passwordInput = button.previousElementSibling;
         const icon = button.querySelector(".material-icons");
         button.addEventListener("click", () => {
             const isPasswordVisible = passwordInput.getAttribute("type") === "text";
@@ -87,6 +87,27 @@ function updateCountdowns() {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".follow-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const username = button.dataset.username;
+            const isFollowing = button.dataset.following === "true";
+            const url = isFollowing ? `/unfollow/${username}` : `/follow/${username}`;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "X-CSRFToken": csrfToken },
+                credentials: "include"
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    button.dataset.following = !isFollowing;
+                    button.textContent = !isFollowing ? "Followed" : "Follow";
+                }
+            });
+        });
+    });
+});
 
 // Update countdowns every second
 setInterval(updateCountdowns, 1000);

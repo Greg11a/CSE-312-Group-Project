@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Following{% endblock %}
+
+{% block content %}
+<div class="container">
+    <main class="main-content">
+        {% for user in following %}
+        <div class="post-header">
+            <img src="{{ url_for('static', filename=user['avatar'] if 'avatar' in user else 'images/default_avatar.png') }}"
+                alt="Avatar" class="avatar" width="40" height="40">
+            {{ user }}
+        </div>
+        {% endfor %}
+    </main>
+</div>
+{% endblock %}

@@ -14,7 +14,7 @@
 }
 
 body {
-  background: linear-gradient(100deg, white,  rgb(29, 155, 240));
+  background: linear-gradient(100deg, white, rgb(29, 155, 240));
   display: flex;
   justify-content: center;
 }
@@ -474,7 +474,7 @@ header nav ul li a:hover {
 }
 
 .upload-section .material-icons {
-  font-size: 25px; 
+  font-size: 25px;
   color: rgb(29, 155, 240);
 }
 
@@ -489,9 +489,9 @@ header nav ul li a:hover {
 .upload-section input[type="file"] {
   display: inline-block;
   border: 1px solid rgb(227, 225, 225);
-  border-radius: 5px; 
+  border-radius: 5px;
   font-size: 13px;
-  padding: 8px 15px; 
+  padding: 8px 15px;
 }
 
 .upload-section input[type="file"]:hover {
@@ -499,3 +499,15 @@ header nav ul li a:hover {
   color: white;
 }
 
+.follow-button {
+  background-color: var(--button-color);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.follow-button[data-following="true"] {
+  background-color: gray;
+}
