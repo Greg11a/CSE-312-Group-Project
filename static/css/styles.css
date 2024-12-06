@@ -324,6 +324,18 @@ header nav ul li a:hover {
   background-color: #f1f1f1
 }
 
+.dropdown-content a.username {
+  color: black;
+  font-weight: bold;
+  background-color: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.dropdown-content a.username:hover {
+  background-color: transparent;
+}
+
 .dropdown:hover .dropdown-content {
   display: block;
 }
