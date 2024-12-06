@@ -7,6 +7,8 @@ import db
 import os
 import json
 import threading
+from threading import Lock
+from collections import deque
 
 
 from gevent import monkey
@@ -37,7 +39,50 @@ app.jinja_env.autoescape = True
 csrf = CSRFProtect(app)
 socketio = SocketIO(app)
 
+#---------------------------DDOS Feature------------------------------
+RATE_LIMIT = 50    
+TIME_WINDOW = 10      
+BLOCK_DURATION = 30
 
+ip_requests= {}
+blocked_ips = {}
+lock = Lock()
+
+@app.before_request
+def rate_limit():
+    client_ip = request.remote_addr
+
+    current_time = time.time()
+
+    with lock:
+        if client_ip in blocked_ips:
+            block_expires = blocked_ips[client_ip]
+            if current_time < block_expires:
+                return too_many_requests_response(block_expires - current_time)
+            else:
+                del blocked_ips[client_ip]
+
+        if client_ip not in ip_requests:
+            ip_requests[client_ip] = deque()
+
+        while ip_requests[client_ip] and ip_requests[client_ip][0] < current_time - TIME_WINDOW:
+            ip_requests[client_ip].popleft()
+
+        ip_requests[client_ip].append(current_time)
+
+        if len(ip_requests[client_ip]) > RATE_LIMIT:
+            blocked_ips[client_ip] = current_time + BLOCK_DURATION
+            del ip_requests[client_ip]
+            return too_many_requests_response(BLOCK_DURATION)
+
+def too_many_requests_response(retry_after):
+    response = jsonify({
+        "error": "Too Many Requests",
+        "message": "You have exceeded the allowed number of requests. Please try again later."
+    })
+    response.status_code = 429
+    response.headers["Retry-After"] = f"{int(retry_after)}"  # Time in seconds
+    return response
 # --------------------------Helper Functions---------------------------
 def get_current_user():
     token = request.cookies.get("auth_token")
