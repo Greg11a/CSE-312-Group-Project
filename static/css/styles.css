@@ -107,7 +107,7 @@ header nav ul li a:hover {
 
 .post-input button {
   align-self: flex-end;
-  background:rgb(26, 140, 216);
+  background: var(--button-color);
   border: none;
   border-radius: 5px;
   color: white;
