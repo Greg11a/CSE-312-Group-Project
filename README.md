@@ -2,6 +2,7 @@ This is a group project from CSE 312 Web application charged by Jesse.
 The group meeting is scheduled every Wednesday 5:00pm - 7:00pm at Group Study Room in Silverman Library.
 
 Project Link: https://cse312.ubcs.top:19550/
+_______________________________________________________________________________________________________
 ____________________________Project Part 3 Objective 3: Following&Followers____________________________
 Testing Procedure:
 1. Register and Login as a user.
