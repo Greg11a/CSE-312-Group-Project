@@ -4,6 +4,7 @@ The group meeting is scheduled every Wednesday 5:00pm - 7:00pm at Group Study Ro
 Project Link: https://cse312.ubcs.top:19550/
 _______________________________________________________________________________________________________
 ____________________________Project Part 3 Objective 3: Following&Followers____________________________
+
 Testing Procedure:
 1. Register and Login as a user.
 2. Repeat step 1 again in another browser.
