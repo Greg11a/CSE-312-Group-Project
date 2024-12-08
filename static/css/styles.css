@@ -14,7 +14,7 @@
 }
 
 body {
-  background: linear-gradient(100deg, white, rgb(29, 155, 240));
+  background: rgb(245, 244, 241);
   display: flex;
   justify-content: center;
 }
@@ -107,7 +107,7 @@ header nav ul li a:hover {
 
 .post-input button {
   align-self: flex-end;
-  background: linear-gradient(150deg, rgb(161, 205, 235), rgb(26, 140, 216));
+  background:rgb(26, 140, 216);
   border: none;
   border-radius: 5px;
   color: white;
@@ -135,6 +135,7 @@ header nav ul li a:hover {
 .post-header {
   display: flex;
   align-items: center;
+  margin-bottom: 25px; 
   gap: 10px;
 }
 
@@ -146,10 +147,11 @@ header nav ul li a:hover {
 
 .post-header h3 {
   font-size: 18px;
-  margin-right: 10px;
 }
 
 .post-header span {
+  margin-left: auto;
+  margin-right: 10px;
   color: rgb(83, 100, 113);
   font-size: 14px;
 }
@@ -184,6 +186,11 @@ header nav ul li a:hover {
 .like-button:hover {
   color: var(--button-hover-color);
   scale: 1.1;
+}
+
+.like-button span.material-icons {
+  font-size: 20px;
+  vertical-align: bottom; 
 }
 
 .like-count {
