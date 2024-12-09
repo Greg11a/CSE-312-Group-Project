@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="login-page">
+<div class="todo-image">
+    <img src="/static/images/login_todo.jpg" alt="Login-Patrick-Meme" />
+</div>
+<div class="login-container">
+    <h2>Login</h2>
+    <form action="/login" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="input-container">
+            <label for="username" style="color: black;">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-container">
+            <label for="password" style="color: black;">Password</label>
+            <div class="password-input">
+                <input type="password" id="password" name="password" required>
+                <button type="button" class="visibility-password">
+                    <span class="material-icons">visibility_off</span>
+                </button>
+            </div>
+        </div>
+        <button type="submit" class="login-button">Login</button>
+    </form>
+    <p class="register-link" style="color: black;">Don't have an account?
+        <a href="/register" class="arrow-To-Right">Register here &#x2192;</a>
+    </p>
+</div>
+</div>
+
+{% endblock %}

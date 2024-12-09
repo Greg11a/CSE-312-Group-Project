@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<body data-server-time="{{ server_time }}">
+<div class="container">
+    <main class="main-content">
+        <div class="post-input">
+            {% if username %}
+            <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <textarea name="post_content" placeholder="Welcome aboard! {{ username }}, What do you want to share today?" required></textarea>
+                
+                <!-- New file input for video upload -->
+                <div class="upload-section">
+                    <label for="files">
+                        <span class="material-icons">cloud_upload</span>
+                        Upload Files:
+                    </label>
+                    <input type="file" name="files" accept="video/*,image/*" multiple>
+                </div>
+                
+                <div class="schedule-post">
+                    <h4>Schedule Post</h4>
+                    <label for="scheduled_days">Days:</label>
+                    <select name="scheduled_days" id="scheduled_days">
+                        {% for day in range(0, 7) %}
+                        <option value="{{ day }}">{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="scheduled_hours">Hours:</label>
+                    <select name="scheduled_hours" id="scheduled_hours">
+                        {% for hour in range(0, 24) %}
+                        <option value="{{ hour }}">{{ hour }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="scheduled_minutes">Minutes:</label>
+                    <select name="scheduled_minutes" id="scheduled_minutes">
+                        {% for minute in range(0, 60) %}
+                        <option value="{{ minute }}">{{ minute }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit">Create Post</button>
+            </form>
+            {% else %}
+            <div class="welcome-message">
+                <p>Welcome! <a href="{{ url_for('login') }}">Login</a> to make posts.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="post-feed" id="posts">
+            {% for post in posts %}
+            <div class="post" data-id="{{ post._id }}" data-timestamp="{{ post.timestamp }}" data-is-published="{{ post.is_published }}">
+                <div class="post-header">
+                    <img src="{{ post.avatar_path }}" alt="Avatar" class="avatar">
+                    <h3>{{ post.username }}</h3>
+                    {% if username and username != post.username %}
+                    <form class="follow-form">
+                        <button 
+                            type="button" 
+                            class="follow-button" 
+                            data-username="{{ post.username }}" 
+                            {% if post.username in following_users %}
+                            data-following="true">Followed</button>
+                        {% else %}
+                            data-following="false">Follow</button>
+                        {% endif %}
+                    </form>
+                    {% endif %}
+                    <span>{{ post.timestamp | format_timestamp }}</span>
+                </div>
+                <p>{{ post.content }}</p>
+                
+                {% if post.video_path %}
+                <video width="320" height="240" class="video" controls>
+                    <source src="{{ url_for('static', filename=post.video_path.split('static/')[-1]) }}" type="video/mp4">
+                </video>
+                {% endif %}
+
+                {% if post.image_path %}
+                <img width="320" height="240" class="image" src="{{ url_for('static', filename=post.image_path.split('static/')[-1]) }}" alt="Uploaded Image">
+                {% endif %}
+                {% if not post.is_published %}
+                <div class="countdown">
+                    Scheduled to post in: <span class="countdown-timer" id="countdown-{{ post._id }}"></span>
+                </div>
+                {% endif %}
+                <div class="post-actions">
+                    <div class="likes">
+                        <form action="{{ url_for('like_post', post_id=post._id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="button" class="like-button" data-id="{{ post._id }}" liked="{{ 'true' if username in post.likes else 'false' }}">
+                                <span class="material-icons">
+                                    {% if username in post.likes %}
+                                    thumb_up
+                                    {% else %}
+                                    thumb_up_off_alt
+                                    {% endif %}
+                                </span>
+                            </button>
+                            <span class="like-count">{{ post.likes | length }}</span>
+                        </form>
+                    </div>
+                    {% if username == post.username %}
+                    <form action="{{ url_for('delete_post', post_id=post._id) }}" method="POST" class="delete-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post?')">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+        <script>
+            const socket = io({
+                transports: ['websocket'],
+                secure: true,
+                path: '/socket.io/'
+            });
+            const currentUsername = "{{ username }}";
+            const csrfToken = "{{ csrf_token() }}";
+
+            socket.on('new_post', (data) => {
+                console.log('New post received:', data);
+                const postsContainer = document.getElementById('posts');
+                const newPost = document.createElement('div');
+                newPost.classList.add('post');
+                newPost.setAttribute('data-id', data._id);
+                newPost.innerHTML = `
+                    <div class="post-header">
+                        <img src="${data.avatar_path}" alt="Avatar" class="avatar">
+                        <h3>${data.username}</h3>
+                        <span>${formatTimestamp(data.timestamp)}</span>
+                    </div>
+                    <p>${data.content}</p>
+                    ${data.video_path ? `<video width="320" height="240" class="video" controls>
+                        <source src="${data.video_path}" type="video/mp4">
+                    </video>` : ''}
+                    ${data.image_path ? `<img width="320" height="240" class="image" src="${data.image_path}" alt="Uploaded Image">` : ''}
+                    <div class="post-actions">
+                        <div class="likes">
+                            <form action="/like/${data._id}" method="POST">
+                                <input type="hidden" name="csrf_token" value="${csrfToken}">
+                                <button type="submit" class="like-button" liked="false">
+                                    <span class="material-icons">thumb_up_off_alt</span>
+                                </button>
+                            </form>
+                            <span class="like-count">0</span>
+                        </div>
+                        ${data.username === currentUsername ? `<form action="/delete_post/${data._id}" method="POST" class="delete-form">
+                            <input type="hidden" name="csrf_token" value="${csrfToken}">
+                            <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this post?')">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </form>` : ''}
+                    </div>
+                `;
+                postsContainer.prepend(newPost);
+            });
+
+            socket.on('delete_post', (data) => {
+                console.log('Post deleted:', data);
+                const postElement = document.querySelector(`[data-id="${data.post_id}"]`);
+                if (postElement) {
+                    postElement.remove();
+                }
+            });
+
+            function formatTimestamp(timestamp) {
+                const now = new Date();
+                const postTime = new Date(timestamp * 1000);
+                const diff = now - postTime;
+                const minute = 60 * 1000;
+                const hour = 60 * minute;
+                const day = 24 * hour;
+
+                if (diff < minute) {
+                    return 'Just now';
+                } else if (diff < hour) {
+                    const minutes = Math.floor(diff / minute);
+                    return `${minutes}m`;
+                } else if (diff < day) {
+                    const hours = Math.floor(diff / hour);
+                    return `${hours}h`;
+                } else if (diff < 7 * day) {
+                    const days = Math.floor(diff / day);
+                    return `${days}d`;
+                } else {
+                    return postTime.toLocaleDateString();
+                }
+            }
+
+            socket.on('like_update', (data) => {
+                const postElement = document.querySelector(`[data-id="${data.post_id}"]`);
+                if (postElement) {
+                    const likeButton = postElement.querySelector('.like-button');
+                    const likeCount = postElement.querySelector('.like-count');
+                    const icon = likeButton.querySelector('.material-icons');
+                    let count = parseInt(likeCount.textContent);
+
+                    if (data.action === 'liked') {
+                        count += 1;
+                        if (data.username === currentUsername) {
+                            likeButton.setAttribute('liked', 'true');
+                            icon.textContent = 'thumb_up';
+                        }
+                    } else {
+                        count -= 1;
+                        if (data.username === currentUsername) {
+                            likeButton.setAttribute('liked', 'false');
+                            icon.textContent = 'thumb_up_off_alt';
+                        }
+                    }
+                    likeCount.textContent = count;
+                }
+            });
+        </script>
+    </main>
+</div>
+</body>
+{% endblock %}

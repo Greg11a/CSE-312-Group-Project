@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login Page</title>
+    <link href="/static/css/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/" class="loginreturn">Return to Home Page</a></h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="chat-icon">Chat</a></li>
+                <li><a href="#" id="login-icon">
+                    <span class="material-icons" alt="Login">account_circle</span>
+                </a></li>
+                    <script  src="/static/js/index.js"></script>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- <a href="/" class="arrow">&#x2190; Home</a> -->
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <div class="input-container">
+                <label for="username" style="color: black;">Username</label>
+                <input type="text" id="username" style="color: black;" placeholder="enter your username here" name="111" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="username" name="111" required> -->
+            </div>
+            <div class="input-container">
+                <label for="password" style="color: black;">Password</label>
+                <input type="text" id="password" style="color: black;" placeholder="enter your password here" name="abc" required>
+                <!-- Place Holder for Sample data storing -->
+                <!--  eg: <input type="text" id="password" name="abc" required> -->
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>
+
+
+:root {
+    --button-color: rgb(29, 155, 240);
+    --border-color: #e1e8ed;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background-color: #f2f3f5;
+    display: flex;
+    justify-content: center;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+header h1 a {
+    text-decoration: none;
+    color: black;
+    font-size: 24px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+header nav ul li {
+    margin: 0px 10px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: var(--button-color);
+    font-size: 24px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+}
+
+header nav ul li a .material-icons {
+    font-size: 36px;
+}
+
+.container {
+    display: grid;
+    gap: 20px;
+    max-width: 600px;
+    width: 100%;
+    padding: 100px 20px;
+}
+
+.main-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.post-input {
+    margin-bottom: 20px;
+}
+
+.post-input textarea {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+.post-input button {
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.post-feed {
+    margin-top: 20px;
+}
+
+.post {
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 0;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-header h3 {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.post-header span {
+    color: #657786;
+    font-size: 14px;
+}
+
+.post p {
+    font-size: 16px;
+    color: #14171a;
+}
+
+.arrow {
+    padding-top: 100px;
+    display: block;
+    color: rgba(240, 184, 29, 0.969);
+    font-size: 18px;
+    margin-left: 20px; 
+}
+
+.login-container {
+    margin: 100px;
+    position: relative;
+    left: -150px;
+    top: 100px;
+    padding: 30px;
+    padding-top: 50px;
+    padding-bottom: 70px;
+    display: block;
+    max-width: 400px; 
+    margin-left: auto; 
+    margin-right: 50px; 
+    display: flex;
+    flex-direction: column;
+    gap: 25px; 
+    box-shadow: 12px 12px 2px 1px rgb(29, 155, 240);
+    border: solid;
+
+}
+
+
+.login-container h2 {
+    color: rgb(29, 155, 240);
+    font-size: 30px; 
+}
+
+.input-container {
+    margin-bottom: 20px; 
+}
+
+.input-container label {
+    font-size: 15px; 
+    color: rgba(240, 184, 29, 0.969);
+}
+
+.input-container input {
+    padding: 15px; 
+    font-size: 15px; 
+    width: 338px;
+    height:10px;
+    border-radius: 5px;
+    border: 1px solid rgb(162, 167, 171);
+}
+
+.login-button {
+    padding: 10px;
+    font-size: 15px; 
+    background-color: rgb(29, 155, 240);
+    color: white;
+    border: none;
+    border-radius: 5px; 
+    cursor: pointer;
+    margin-top: 30px; 
+}
+
+
+

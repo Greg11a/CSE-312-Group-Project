@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>{% block title %}Untitle{% endblock %}</title>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <script>
+        var message = "{{ message }}";
+        if (message) {
+            alert(message);
+        }
+    </script>
+    <header>
+        <h1><a href="/" style="font-size: 30px;">App</a></h1>
+        <nav>
+            <ul>
+                {% if username %}
+                <!-- <h1 style="font-size: 30px;" class="Welcome">Welcome!</h1> -->
+                <div class="dropdown">
+                    <img src="{{ current_avatar }}" class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <div id="dropdown-content" class="dropdown-content">
+                        <a class="username">{{username}}</a>
+                        <a href="/following">Following</a>
+                        <a href="/followers">Followers</a>
+                        <a href="/avatar">Upload Avatar</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <li><a href="/login">
+                        <h1 style="color: black; font-size: 30px;">Login</h1>
+                    </a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    {% block content %}
+    {% endblock %}
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - '8090:8080'
+    volumes:
+      - .:/root
+  db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
