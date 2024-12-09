@@ -525,6 +525,7 @@ def view_following():
         return redirect(url_for("login"))
     
     user = db.get_user_by_username(current_user)
+    current_avatar = url_for("static", filename="images/default_avatar.png")
     if user and "avatar" in user:
         current_avatar = url_for("static", filename=user["avatar"])
 
@@ -540,6 +541,7 @@ def view_followers():
         return redirect(url_for("login"))
     
     user = db.get_user_by_username(current_user)
+    current_avatar = url_for("static", filename="images/default_avatar.png")
     if user and "avatar" in user:
         current_avatar = url_for("static", filename=user["avatar"])
 
