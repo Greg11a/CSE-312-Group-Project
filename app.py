@@ -523,9 +523,13 @@ def view_following():
     if not current_user:
         flash("Please log in to view your following list.", "error")
         return redirect(url_for("login"))
+    
+    user = db.get_user_by_username(current_user)
+    if user and "avatar" in user:
+        current_avatar = url_for("static", filename=user["avatar"])
 
     following = db.get_following(current_user)
-    return render_template("following.html", username=current_user, following=following)
+    return render_template("following.html", username=current_user, following=following, current_avatar=current_avatar)
 
 
 @app.route("/followers")
@@ -534,9 +538,13 @@ def view_followers():
     if not current_user:
         flash("Please log in to view your followers list.", "error")
         return redirect(url_for("login"))
+    
+    user = db.get_user_by_username(current_user)
+    if user and "avatar" in user:
+        current_avatar = url_for("static", filename=user["avatar"])
 
     followers = db.get_followers(current_user)
-    return render_template("followers.html", username=current_user, followers=followers)
+    return render_template("followers.html", username=current_user, followers=followers, current_avatar=current_avatar)
 
 
 # ---------------------------Test Route---------------------------
